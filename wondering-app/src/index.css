@@ -1,0 +1,329 @@
+@import "tailwindcss";
+
+/* ========================================
+   WONDERING DESIGN SYSTEM V2
+   Full token set from Design System Detailed.md
+   ======================================== */
+
+/* --- Primitive Tokens --- */
+:root {
+  /* Base Scale (Warm Neutrals) */
+  --primitive-v2-base-light: 48 100% 97%;
+  --primitive-v2-base-50: 43 28% 93%;
+  --primitive-v2-base-100: 40 21% 88%;
+  --primitive-v2-base-150: 37 17% 84%;
+  --primitive-v2-base-200: 33 15% 80%;
+  --primitive-v2-base-300: 29 11% 71%;
+  --primitive-v2-base-400: 26 9% 63%;
+  --primitive-v2-base-500: 23 8% 54%;
+  --primitive-v2-base-600: 17 10% 46%;
+  --primitive-v2-base-700: 13 13% 37%;
+  --primitive-v2-base-800: 10 15% 28%;
+  --primitive-v2-base-850: 9 18% 24%;
+  --primitive-v2-base-900: 6 21% 20%;
+  --primitive-v2-base-950: 5 25% 16%;
+  --primitive-v2-base-dark: 4 35% 11%;
+
+  /* Brand Blue Scale */
+  --primitive-v2-blue-100: 202 100% 95%;
+  --primitive-v2-blue-200: 202 100% 89%;
+  --primitive-v2-blue-300: 202 100% 84%;
+  --primitive-v2-blue-400: 202 100% 79%;
+  --primitive-v2-blue-500: 202 100% 74%;
+  --primitive-v2-blue-600: 202 51% 59%;
+  --primitive-v2-blue-700: 202 36% 45%;
+  --primitive-v2-blue-800: 202 36% 30%;
+  --primitive-v2-blue-900: 202 36% 15%;
+
+  /* Success/Teal Scale */
+  --primitive-v2-green-300: 154 43% 85%;
+  --primitive-v2-green-500: 165 43% 55%;
+  --primitive-v2-green-600: 170 35% 44%;
+  --primitive-v2-green-700: 170 35% 33%;
+  --primitive-v2-green-900: 168 100% 16%;
+
+  /* Error/Coral Scale */
+  --primitive-v2-pinky-300: 13 100% 88%;
+  --primitive-v2-pinky-500: 7 100% 69%;
+  --primitive-v2-pinky-600: 7 100% 55%;
+  --primitive-v2-pinky-700: 7 100% 42%;
+  --primitive-v2-pinky-900: 7 100% 30%;
+
+  /* Warning/Orange Scale */
+  --primitive-v2-orange-300: 28 100% 76%;
+  --primitive-v2-orange-500: 36 100% 56%;
+
+  /* Info/Violet Scale */
+  --primitive-v2-violet-300: 230 60% 89%;
+  --primitive-v2-violet-500: 227 100% 74%;
+
+  /* Moss/Yellow-Green */
+  --primitive-v2-moss-300: 70 47% 71%;
+  --primitive-v2-moss-500: 75 47% 41%;
+
+  /* Yellow */
+  --primitive-v2-yellow-300: 44 78% 72%;
+  --primitive-v2-yellow-500: 43 73% 54%;
+
+  /* Red */
+  --primitive-v2-red-300: 10 40% 76%;
+  --primitive-v2-red-500: 1 61% 36%;
+
+  /* Border radius */
+  --radius: 0.5rem;
+
+  /* --- Semantic Tokens (--w- prefix to avoid @theme collision) --- */
+
+  /* Brand */
+  --w-brand-primary: var(--primitive-v2-blue-500);
+  --w-brand-primary-hover: var(--primitive-v2-blue-600);
+  --w-brand-primary-active: var(--primitive-v2-blue-700);
+  --w-brand-bg: var(--primitive-v2-blue-100);
+  --w-brand-border: var(--primitive-v2-blue-200);
+  --w-brand-text: var(--primitive-v2-blue-600);
+
+  /* Surfaces */
+  --w-surface: var(--primitive-v2-base-light);
+  --w-surface-secondary: var(--primitive-v2-base-50);
+  --w-surface-tertiary: var(--primitive-v2-base-100);
+  --w-surface-hover: var(--primitive-v2-base-100);
+
+  /* Text */
+  --w-text-primary: var(--primitive-v2-base-dark);
+  --w-text-secondary: var(--primitive-v2-base-700);
+  --w-text-tertiary: var(--primitive-v2-base-500);
+  --w-text-disabled: var(--primitive-v2-base-300);
+  --w-text-inverse: var(--primitive-v2-base-light);
+
+  /* Borders */
+  --w-border: var(--primitive-v2-base-200);
+  --w-border-hover: var(--primitive-v2-base-400);
+  --w-border-strong: var(--primitive-v2-base-500);
+
+  /* Success */
+  --w-success: var(--primitive-v2-green-500);
+  --w-success-bg: var(--primitive-v2-green-300);
+  --w-success-text: var(--primitive-v2-green-900);
+
+  /* Error */
+  --w-error: var(--primitive-v2-pinky-500);
+  --w-error-bg: var(--primitive-v2-pinky-300);
+  --w-error-text: var(--primitive-v2-pinky-900);
+
+  /* Warning */
+  --w-warning: var(--primitive-v2-orange-500);
+  --w-warning-bg: var(--primitive-v2-orange-300);
+
+  /* Info */
+  --w-info: var(--primitive-v2-violet-500);
+  --w-info-bg: var(--primitive-v2-violet-300);
+
+  /* Button: Secondary */
+  --w-button-secondary: var(--primitive-v2-base-150);
+  --w-button-secondary-border: var(--primitive-v2-base-500);
+  --w-button-secondary-hover: var(--primitive-v2-base-400);
+  --w-button-secondary-active: var(--primitive-v2-base-500);
+  --w-button-secondary-foreground: var(--primitive-v2-base-dark);
+
+  /* Button: Tertiary */
+  --w-button-tertiary: var(--primitive-v2-base-light);
+  --w-button-tertiary-border: var(--primitive-v2-base-300);
+  --w-button-tertiary-shadow: var(--primitive-v2-base-200);
+  --w-button-tertiary-shadow-active: var(--primitive-v2-base-300);
+  --w-button-tertiary-foreground: var(--primitive-v2-base-dark);
+
+  /* Button: Success */
+  --w-button-success: var(--primitive-v2-green-500);
+  --w-button-success-border: var(--primitive-v2-green-700);
+  --w-button-success-shadow: var(--primitive-v2-green-600);
+  --w-button-success-foreground: var(--primitive-v2-base-light);
+
+  /* Button: Danger */
+  --w-button-danger: var(--primitive-v2-pinky-900);
+  --w-button-danger-border: var(--primitive-v2-pinky-700);
+  --w-button-danger-shadow: var(--primitive-v2-pinky-600);
+  --w-button-danger-foreground: var(--primitive-v2-pinky-300);
+}
+
+/* --- Tailwind Theme (references --w- semantic tokens) --- */
+@theme {
+  /* Brand */
+  --color-brand: hsl(var(--w-brand-primary));
+  --color-brand-hover: hsl(var(--w-brand-primary-hover));
+  --color-brand-active: hsl(var(--w-brand-primary-active));
+  --color-brand-bg: hsl(var(--w-brand-bg));
+  --color-brand-border: hsl(var(--w-brand-border));
+  --color-brand-text: hsl(var(--w-brand-text));
+
+  /* Surfaces */
+  --color-surface: hsl(var(--w-surface));
+  --color-surface-secondary: hsl(var(--w-surface-secondary));
+  --color-surface-tertiary: hsl(var(--w-surface-tertiary));
+  --color-surface-hover: hsl(var(--w-surface-hover));
+
+  /* Text */
+  --color-text-primary: hsl(var(--w-text-primary));
+  --color-text-secondary: hsl(var(--w-text-secondary));
+  --color-text-tertiary: hsl(var(--w-text-tertiary));
+  --color-text-disabled: hsl(var(--w-text-disabled));
+  --color-text-inverse: hsl(var(--w-text-inverse));
+
+  /* Borders */
+  --color-border: hsl(var(--w-border));
+  --color-border-hover: hsl(var(--w-border-hover));
+  --color-border-strong: hsl(var(--w-border-strong));
+
+  /* Status */
+  --color-success: hsl(var(--w-success));
+  --color-success-bg: hsl(var(--w-success-bg));
+  --color-success-text: hsl(var(--w-success-text));
+  --color-error: hsl(var(--w-error));
+  --color-error-bg: hsl(var(--w-error-bg));
+  --color-error-text: hsl(var(--w-error-text));
+  --color-warning: hsl(var(--w-warning));
+  --color-warning-bg: hsl(var(--w-warning-bg));
+  --color-info: hsl(var(--w-info));
+  --color-info-bg: hsl(var(--w-info-bg));
+
+  /* Button tokens */
+  --color-button-secondary: hsl(var(--w-button-secondary));
+  --color-button-secondary-border: hsl(var(--w-button-secondary-border));
+  --color-button-secondary-hover: hsl(var(--w-button-secondary-hover));
+  --color-button-secondary-active: hsl(var(--w-button-secondary-active));
+  --color-button-secondary-foreground: hsl(var(--w-button-secondary-foreground));
+  --color-button-tertiary: hsl(var(--w-button-tertiary));
+  --color-button-tertiary-border: hsl(var(--w-button-tertiary-border));
+  --color-button-tertiary-shadow: hsl(var(--w-button-tertiary-shadow));
+  --color-button-tertiary-shadow-active: hsl(var(--w-button-tertiary-shadow-active));
+  --color-button-tertiary-foreground: hsl(var(--w-button-tertiary-foreground));
+  --color-button-success: hsl(var(--w-button-success));
+  --color-button-success-border: hsl(var(--w-button-success-border));
+  --color-button-success-shadow: hsl(var(--w-button-success-shadow));
+  --color-button-success-foreground: hsl(var(--w-button-success-foreground));
+  --color-button-danger: hsl(var(--w-button-danger));
+  --color-button-danger-border: hsl(var(--w-button-danger-border));
+  --color-button-danger-shadow: hsl(var(--w-button-danger-shadow));
+  --color-button-danger-foreground: hsl(var(--w-button-danger-foreground));
+
+  /* Animations */
+  --animate-fade-in: fadeIn 0.2s ease-in-out;
+  --animate-pulse-scale: pulseScale 2s ease-in-out infinite;
+  --animate-hero-reveal: heroReveal 0.6s ease-out forwards;
+  --animate-cascade-drop-in: cascadeDropIn 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  --animate-slide-up: slideUp 0.3s ease-out;
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  @keyframes pulseScale {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.7; }
+  }
+
+  @keyframes heroReveal {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes cascadeDropIn {
+    0% { opacity: 0; transform: translateY(-20px) scale(0.85); }
+    60% { opacity: 1; transform: translateY(4px) scale(1.02); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+}
+
+/* --- Font Classes --- */
+.inter-font {
+  font-family: 'Inter', sans-serif;
+}
+
+.share-tech-mono-font {
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.logo-font {
+  font-family: 'Rubik', serif;
+  font-weight: 500;
+}
+
+.young-serif-font {
+  font-family: 'Young Serif', serif;
+}
+
+/* --- Cascade Delay Utilities --- */
+.cascade-delay-0 { animation-delay: 0ms; }
+.cascade-delay-1 { animation-delay: 220ms; }
+.cascade-delay-2 { animation-delay: 440ms; }
+.cascade-delay-3 { animation-delay: 660ms; }
+.cascade-delay-4 { animation-delay: 880ms; }
+.cascade-delay-5 { animation-delay: 1100ms; }
+.cascade-delay-6 { animation-delay: 1320ms; }
+.cascade-delay-7 { animation-delay: 1540ms; }
+.cascade-delay-8 { animation-delay: 1760ms; }
+.cascade-delay-9 { animation-delay: 1980ms; }
+.cascade-delay-10 { animation-delay: 2200ms; }
+
+.animate-on-load {
+  opacity: 0;
+}
+
+/* --- Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-reveal,
+  .animate-cascade-drop-in {
+    animation: none !important;
+    opacity: 1;
+  }
+  .animate-on-load {
+    opacity: 1;
+  }
+}
+
+/* --- Utility Classes --- */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hover-lift {
+  transition: transform 150ms, box-shadow 150ms;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px hsl(0 0% 9% / 0.15);
+}
+
+/* --- Custom Scrollbar (V2) --- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(43 28% 93%);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(33 15% 80%);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(26 9% 63%);
+}
+
+/* --- Safe Area Insets --- */
+.safe-area-top { padding-top: env(safe-area-inset-top); }
+.safe-area-bottom { padding-bottom: max(env(safe-area-inset-bottom), 1rem); }
+
+/* --- Base Reset --- */
+body {
+  margin: 0;
+  min-height: 100vh;
+}
