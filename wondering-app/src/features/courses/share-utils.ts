@@ -18,9 +18,12 @@ export function generateShareLink(
   }
 }
 
+const isMobile = () =>
+  /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+
 export async function shareCourse(shareData: ShareLinkData): Promise<"shared" | "copied"> {
-  // Use Web Share API on supported platforms (iOS Safari, etc.)
-  if (navigator.share) {
+  // Use native share sheet only on mobile (iOS/Android)
+  if (isMobile() && navigator.share) {
     try {
       await navigator.share({
         title: shareData.courseName,
@@ -29,14 +32,13 @@ export async function shareCourse(shareData: ShareLinkData): Promise<"shared" | 
       })
       return "shared"
     } catch (err) {
-      // User cancelled or share failed — fall through to clipboard
       if ((err as DOMException).name === "AbortError") {
-        return "copied" // user cancelled, don't show error
+        return "copied"
       }
     }
   }
 
-  // Fallback: copy to clipboard (web) — include description + link
+  // Web: always copy to clipboard — description + link
   const clipboardText = `${shareData.description}\n${shareData.shareUrl}`
   await navigator.clipboard.writeText(clipboardText)
   return "copied"
