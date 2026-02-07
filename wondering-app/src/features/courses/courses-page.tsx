@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import { showToast } from "@/components/ui/toast"
-import { MoreVertical, Pencil, Trash2, Share2, Users } from "lucide-react"
+import { MoreVertical, Pencil, Trash2, Share2, Users, Plus } from "lucide-react"
 import type { Course, CourseStatus } from "./types"
 import { mockCourses } from "./mock-data"
 import { generateShareLink, shareCourse } from "./share-utils"
@@ -81,42 +81,42 @@ function CourseMenu({ course, onShare, onDelete, onEditName }: CourseMenuProps) 
 
 function CourseCard({ course, onShare, onDelete, onEditName, onOpenPreview }: CourseMenuProps) {
   return (
-    <div className="rounded-xl border border-border bg-surface p-4">
-      {/* Top row: name + kebab */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <h3
-            className="font-medium text-text-primary leading-snug cursor-pointer hover:text-brand-text transition-colors"
-            onClick={onOpenPreview}
-          >
-            {course.name}
-          </h3>
-          <span className="text-xs text-text-tertiary">by {course.creator}</span>
+    <div
+      className="w-56 shrink-0 snap-start rounded-xl border border-border bg-surface p-3 cursor-pointer active:scale-[0.98] transition-transform"
+      onClick={onOpenPreview}
+    >
+      {/* Name + kebab */}
+      <div className="flex items-start justify-between gap-2">
+        <h3 className="text-sm font-medium leading-snug text-text-primary line-clamp-2">
+          {course.name}
+        </h3>
+        <div onClick={(e) => e.stopPropagation()}>
+          <CourseMenu
+            course={course}
+            onShare={onShare}
+            onDelete={onDelete}
+            onEditName={onEditName}
+          />
         </div>
-        <CourseMenu
-          course={course}
-          onShare={onShare}
-          onDelete={onDelete}
-          onEditName={onEditName}
-        />
       </div>
+      <span className="mt-0.5 block text-xs text-text-tertiary">by {course.creator}</span>
 
-      {/* Meta row: status + lesson count */}
-      <div className="mt-3 flex items-center gap-3">
+      {/* Status + lessons */}
+      <div className="mt-2.5 flex items-center gap-2">
         <Badge variant={statusBadgeVariant(course.status)}>
           {course.status}
         </Badge>
-        <span className="text-sm text-text-secondary">
-          {course.doneLessons} / {course.totalLessons} lessons
+        <span className="text-xs text-text-secondary">
+          {course.doneLessons}/{course.totalLessons}
         </span>
       </div>
 
       {/* Action buttons */}
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <Button variant="tertiary" size="md" uppercase={false} fullWidth>
-          View Saved
+      <div className="mt-3 grid grid-cols-2 gap-2" onClick={(e) => e.stopPropagation()}>
+        <Button variant="tertiary" size="sm" uppercase={false} fullWidth>
+          Saved
         </Button>
-        <Button variant="primary" size="md" fullWidth>
+        <Button variant="primary" size="sm" fullWidth>
           Review
         </Button>
       </div>
@@ -230,13 +230,25 @@ export function CoursesPage({ onOpenPreview }: CoursesPageProps) {
             View and manage your learning courses
           </p>
         </div>
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={onOpenPreview}
+          leadingIcon={<Plus className="size-4" />}
+        >
+          Add a course
+        </Button>
       </div>
 
-      {/* ─── Mobile: Card list ─── */}
-      <div className="flex flex-col gap-3 md:hidden">
-        {courses.map((course) => (
-          <CourseCard key={course.id} course={course} {...menuProps} />
-        ))}
+      {/* ─── Mobile: Horizontal scroll ─── */}
+      <div className="-mx-4 md:hidden">
+        <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-4 no-scrollbar">
+          {courses.map((course) => (
+            <CourseCard key={course.id} course={course} {...menuProps} />
+          ))}
+          {/* Spacer so last card doesn't hug edge */}
+          <div className="w-1 shrink-0" />
+        </div>
       </div>
 
       {/* ─── Desktop: Table ─── */}

@@ -4,9 +4,10 @@ import { BottomNav } from "@/components/bottom-nav"
 import { CoursesPage } from "@/features/courses/courses-page"
 import { SharedCoursePage } from "@/features/courses/shared-course-page"
 import { CoursePreviewPage } from "@/features/courses/course-preview-page"
+import { CourseCatalogPage } from "@/features/courses/course-catalog-page"
 import { ToastContainer } from "@/components/ui/toast"
 
-type Page = "home" | "create" | "courses" | "profile" | "shared-course" | "course-preview"
+type Page = "home" | "create" | "courses" | "profile" | "shared-course" | "course-catalog" | "course-preview"
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>("courses")
@@ -26,9 +27,15 @@ function App() {
             onNavigate={(page) => setCurrentPage(page as Page)}
           />
           <main className="flex-1 overflow-auto">
-            {currentPage === "courses" && <CoursesPage onOpenPreview={() => setCurrentPage("course-preview")} />}
+            {currentPage === "courses" && <CoursesPage onOpenPreview={() => setCurrentPage("course-catalog")} />}
+            {currentPage === "course-catalog" && (
+              <CourseCatalogPage
+                onClose={() => setCurrentPage("courses")}
+                onSelectCourse={() => setCurrentPage("course-preview")}
+              />
+            )}
             {currentPage === "course-preview" && (
-              <CoursePreviewPage onBack={() => setCurrentPage("courses")} />
+              <CoursePreviewPage onBack={() => setCurrentPage("course-catalog")} />
             )}
             {currentPage === "home" && (
               <div className="flex h-full items-center justify-center">

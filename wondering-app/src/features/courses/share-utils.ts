@@ -7,7 +7,7 @@ export function generateShareLink(
   sharedByName = "Someone"
 ): ShareLinkData {
   const shareUrl = `${BASE_URL}/course/shared/${course.id}`
-  const description = `${sharedByName} is inviting you to check out the "${course.name}" course on Wondering`
+  const description = course.name
 
   return {
     courseId: course.id,

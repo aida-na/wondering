@@ -1,4 +1,4 @@
-import type { Course, CourseOutline } from "./types"
+import type { CatalogCourse, Course, CourseOutline } from "./types"
 
 export const mockCourses: Course[] = [
   {
@@ -56,6 +56,46 @@ export const mockCourses: Course[] = [
     isShared: true,
     shareCount: 34,
   },
+]
+
+export const catalogCategories = [
+  "For You", "All", "Psychology", "Philosophy", "Science", "Design",
+  "Learning", "Longevity", "AI", "Analytic Philosophy", "Analytics",
+  "Architecture", "Art", "Artificial Intelligence", "Business",
+  "Business Strategy",
+] as const
+
+export const mockCatalogCourses: CatalogCourse[] = [
+  // Psychology
+  { id: "c1", name: "The Great Mental Models Volume 1", creator: "Shane Parrish and Rhiannon Beaubien", category: "Psychology", popular: true },
+  { id: "c2", name: "Never Split the Difference", creator: "Chris Voss", category: "Psychology", popular: true },
+  { id: "c3", name: "Hooked: How to Build Habit-Forming Products", creator: "Nir Eyal", category: "Psychology", popular: true },
+  { id: "c4", name: "100 Things Every Designer Needs to Know About People", creator: "Susan M. Weinschenk", category: "Psychology", popular: true },
+  { id: "c5", name: "The Psychology of Money", creator: "Morgan Housel", category: "Psychology", popular: true },
+  // Philosophy
+  { id: "c6", name: "The Creative Act: A Way of Being", creator: "Rick Rubin", category: "Philosophy", popular: true },
+  { id: "c7", name: "The Almanack of Naval Ravikant", creator: "Eric Jorgenson", category: "Philosophy", popular: true },
+  { id: "c8", name: "Great Thinkers", creator: "The School of Life", category: "Philosophy", popular: true },
+  { id: "c9", name: "A Little History of Philosophy", creator: "Nigel Warburton", category: "Philosophy", popular: true },
+  { id: "c10", name: "The Timeless Way of Building", creator: "Christopher Alexander", category: "Philosophy", popular: true },
+  // Science
+  { id: "c11", name: "Astrophysics for People in a Hurry", creator: "Neil deGrasse Tyson", category: "Science", popular: true },
+  { id: "c12", name: "A Short History of Nearly Everything", creator: "Bill Bryson", category: "Science", popular: true },
+  { id: "c13", name: "The Gene: An Intimate History", creator: "Siddhartha Mukherjee", category: "Science" },
+  { id: "c14", name: "Sapiens: A Brief History of Humankind", creator: "Yuval Noah Harari", category: "Science", popular: true },
+  { id: "c15", name: "The Elegant Universe", creator: "Brian Greene", category: "Science" },
+  // Design
+  { id: "c16", name: "The Design of Everyday Things", creator: "Don Norman", category: "Design", popular: true },
+  { id: "c17", name: "Refactoring UI", creator: "Adam Wathan & Steve Schoger", category: "Design", popular: true },
+  { id: "c18", name: "Don't Make Me Think", creator: "Steve Krug", category: "Design" },
+  { id: "c19", name: "Grid Systems in Graphic Design", creator: "Josef Müller-Brockmann", category: "Design" },
+  { id: "c20", name: "Designing Interfaces", creator: "Jenifer Tidwell", category: "Design", popular: true },
+  // AI
+  { id: "c21", name: "Life 3.0", creator: "Max Tegmark", category: "AI", popular: true },
+  { id: "c22", name: "Superintelligence", creator: "Nick Bostrom", category: "AI" },
+  { id: "c23", name: "The Alignment Problem", creator: "Brian Christian", category: "AI", popular: true },
+  { id: "c24", name: "Human Compatible", creator: "Stuart Russell", category: "AI" },
+  { id: "c25", name: "AI Superpowers", creator: "Kai-Fu Lee", category: "AI", popular: true },
 ]
 
 export const mockCourseOutline: CourseOutline = {

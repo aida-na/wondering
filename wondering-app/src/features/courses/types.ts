@@ -33,6 +33,14 @@ export interface CourseOutline {
   dailyGoalMinutes: number
 }
 
+export interface CatalogCourse {
+  id: string
+  name: string
+  creator: string
+  category: string
+  popular?: boolean
+}
+
 export interface ShareLinkData {
   courseId: string
   courseName: string
