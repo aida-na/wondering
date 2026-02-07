@@ -17,6 +17,30 @@ export interface Lesson {
   title: string
 }
 
+export type LessonStatus = "active" | "pending" | "locked"
+
+export interface LearningLesson {
+  id: string
+  title: string
+  status: LessonStatus
+  isReview?: boolean
+  reviewProgress?: string // e.g. "0/3 sessions"
+}
+
+export interface LearningSection {
+  id: string
+  title: string
+  doneLessons: number
+  totalLessons: number
+  lessons: LearningLesson[]
+}
+
+export interface LearningPath {
+  courseId: string
+  courseName: string
+  sections: LearningSection[]
+}
+
 export interface Section {
   id: string
   title: string

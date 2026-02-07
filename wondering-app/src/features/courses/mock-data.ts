@@ -1,4 +1,4 @@
-import type { CatalogCourse, Course, CourseOutline } from "./types"
+import type { CatalogCourse, Course, CourseOutline, LearningPath } from "./types"
 
 export const mockCourses: Course[] = [
   {
@@ -55,6 +55,64 @@ export const mockCourses: Course[] = [
     createdAt: "2026-01-30",
     isShared: true,
     shareCount: 34,
+  },
+]
+
+export const recommendedCourses: Course[] = [
+  {
+    id: "r1",
+    name: "The Great Mental Models Volume 1",
+    creator: "Shane Parrish",
+    status: "Not Started",
+    doneLessons: 0,
+    totalLessons: 18,
+    createdAt: "2026-02-06",
+    isShared: false,
+    shareCount: 0,
+  },
+  {
+    id: "r2",
+    name: "Never Split the Difference",
+    creator: "Chris Voss",
+    status: "Not Started",
+    doneLessons: 0,
+    totalLessons: 14,
+    createdAt: "2026-02-06",
+    isShared: false,
+    shareCount: 0,
+  },
+  {
+    id: "r3",
+    name: "The Psychology of Money",
+    creator: "Morgan Housel",
+    status: "Not Started",
+    doneLessons: 0,
+    totalLessons: 20,
+    createdAt: "2026-02-06",
+    isShared: false,
+    shareCount: 0,
+  },
+  {
+    id: "r4",
+    name: "Astrophysics for People in a Hurry",
+    creator: "Neil deGrasse Tyson",
+    status: "Not Started",
+    doneLessons: 0,
+    totalLessons: 12,
+    createdAt: "2026-02-06",
+    isShared: false,
+    shareCount: 0,
+  },
+  {
+    id: "r5",
+    name: "The Design of Everyday Things",
+    creator: "Don Norman",
+    status: "Not Started",
+    doneLessons: 0,
+    totalLessons: 16,
+    createdAt: "2026-02-06",
+    isShared: false,
+    shareCount: 0,
   },
 ]
 
@@ -124,4 +182,111 @@ export const mockCourseOutline: CourseOutline = {
       ],
     },
   ],
+}
+
+/** Mock learning paths keyed by course id */
+export const mockLearningPaths: Record<string, LearningPath> = {
+  "1": {
+    courseId: "1",
+    courseName: "Bio-Optimized Nutrition for Peak Energy",
+    sections: [
+      {
+        id: "lp1-s1",
+        title: "Nutrition Foundations",
+        doneLessons: 1,
+        totalLessons: 3,
+        lessons: [
+          { id: "lp1-s1-l1", title: "Macronutrient Basics", status: "active" },
+          { id: "lp1-s1-l2", title: "Micronutrient Essentials", status: "pending" },
+          { id: "lp1-s1-l3", title: "Hydration Science", status: "pending" },
+          { id: "lp1-s1-r", title: "Section Review", status: "locked", isReview: true, reviewProgress: "0/3 sessions" },
+        ],
+      },
+      {
+        id: "lp1-s2",
+        title: "Meal Timing & Energy",
+        doneLessons: 0,
+        totalLessons: 3,
+        lessons: [
+          { id: "lp1-s2-l1", title: "Circadian Eating", status: "pending" },
+          { id: "lp1-s2-l2", title: "Pre- & Post-Workout Fuel", status: "pending" },
+          { id: "lp1-s2-l3", title: "Fasting Windows", status: "pending" },
+          { id: "lp1-s2-r", title: "Section Review", status: "locked", isReview: true, reviewProgress: "0/3 sessions" },
+        ],
+      },
+    ],
+  },
+  "3": {
+    courseId: "3",
+    courseName: "Hooked for Hardware Onboarding",
+    sections: [
+      {
+        id: "lp3-s1",
+        title: "Hook Model Basics",
+        doneLessons: 3,
+        totalLessons: 3,
+        lessons: [
+          { id: "lp3-s1-l1", title: "Trigger Design", status: "active" },
+          { id: "lp3-s1-l2", title: "Action Simplification", status: "active" },
+          { id: "lp3-s1-l3", title: "Variable Rewards", status: "active" },
+          { id: "lp3-s1-r", title: "Section Review", status: "pending", isReview: true, reviewProgress: "0/3 sessions" },
+        ],
+      },
+      {
+        id: "lp3-s2",
+        title: "Hardware Applications",
+        doneLessons: 0,
+        totalLessons: 3,
+        lessons: [
+          { id: "lp3-s2-l1", title: "Onboarding Friction", status: "pending" },
+          { id: "lp3-s2-l2", title: "Physical-Digital Bridges", status: "pending" },
+          { id: "lp3-s2-l3", title: "Retention Loops", status: "locked" },
+          { id: "lp3-s2-r", title: "Section Review", status: "locked", isReview: true, reviewProgress: "0/3 sessions" },
+        ],
+      },
+    ],
+  },
+}
+
+/** Fallback: generate a generic learning path from any Course */
+export function generateLearningPath(course: Course): LearningPath {
+  const lessonsPerSection = 3
+  const sectionCount = Math.max(1, Math.ceil(course.totalLessons / lessonsPerSection))
+  let remaining = course.totalLessons
+  let done = course.doneLessons
+
+  const sections: LearningPath["sections"] = Array.from({ length: sectionCount }, (_, si) => {
+    const count = Math.min(lessonsPerSection, remaining)
+    remaining -= count
+    const sectionDone = Math.min(done, count)
+    done -= sectionDone
+
+    const lessons: LearningPath["sections"][0]["lessons"] = Array.from({ length: count }, (_, li) => {
+      const lessonDone = li < sectionDone
+      const isNext = li === sectionDone && sectionDone < count
+      return {
+        id: `gen-s${si}-l${li}`,
+        title: `Lesson ${si * lessonsPerSection + li + 1}`,
+        status: lessonDone ? "active" as const : isNext ? "pending" as const : "locked" as const,
+      }
+    })
+
+    lessons.push({
+      id: `gen-s${si}-r`,
+      title: "Section Review",
+      status: "locked",
+      isReview: true,
+      reviewProgress: `0/${count} sessions`,
+    })
+
+    return {
+      id: `gen-s${si}`,
+      title: `Section ${si + 1}`,
+      doneLessons: sectionDone,
+      totalLessons: count,
+      lessons,
+    }
+  })
+
+  return { courseId: course.id, courseName: course.name, sections }
 }

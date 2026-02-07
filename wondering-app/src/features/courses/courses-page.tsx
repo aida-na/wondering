@@ -11,8 +11,9 @@ import {
 import { showToast } from "@/components/ui/toast"
 import { MoreVertical, Pencil, Trash2, Share2, Users, Plus } from "lucide-react"
 import type { Course, CourseStatus } from "./types"
-import { mockCourses } from "./mock-data"
+import { mockCourses, recommendedCourses } from "./mock-data"
 import { generateShareLink, shareCourse } from "./share-utils"
+import { CourseOutlineModal } from "./course-outline-modal"
 
 function statusBadgeVariant(status: CourseStatus) {
   switch (status) {
@@ -26,14 +27,6 @@ function statusBadgeVariant(status: CourseStatus) {
   }
 }
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  })
-}
-
 /* ─── Kebab menu (shared between card and table row) ─── */
 
 interface CourseMenuProps {
@@ -42,6 +35,7 @@ interface CourseMenuProps {
   onDelete: (id: string) => void
   onEditName: (id: string) => void
   onOpenPreview?: () => void
+  onOpenOutline?: (course: Course) => void
 }
 
 function CourseMenu({ course, onShare, onDelete, onEditName }: CourseMenuProps) {
@@ -79,11 +73,11 @@ function CourseMenu({ course, onShare, onDelete, onEditName }: CourseMenuProps) 
 
 /* ─── Mobile: Course Card ─── */
 
-function CourseCard({ course, onShare, onDelete, onEditName, onOpenPreview }: CourseMenuProps) {
+function CourseCard({ course, onShare, onDelete, onEditName, onOpenOutline }: CourseMenuProps) {
   return (
     <div
       className="w-56 shrink-0 snap-start rounded-xl border border-border bg-surface p-3 cursor-pointer active:scale-[0.98] transition-transform"
-      onClick={onOpenPreview}
+      onClick={() => onOpenOutline?.(course)}
     >
       {/* Name + kebab */}
       <div className="flex items-start justify-between gap-2">
@@ -124,55 +118,41 @@ function CourseCard({ course, onShare, onDelete, onEditName, onOpenPreview }: Co
   )
 }
 
-/* ─── Desktop: Table Row ─── */
+/* ─── Carousel row ─── */
 
-function CourseRow({ course, onShare, onDelete, onEditName, onOpenPreview }: CourseMenuProps) {
+function CourseCarousel({
+  title,
+  courses,
+  menuProps,
+  emptyMessage,
+}: {
+  title: string
+  courses: Course[]
+  menuProps: Omit<CourseMenuProps, "course">
+  emptyMessage?: string
+}) {
+  if (courses.length === 0 && emptyMessage) {
+    return (
+      <div className="mb-6">
+        <h2 className="mb-3 text-base font-bold text-text-primary">{title}</h2>
+        <p className="text-sm text-text-tertiary">{emptyMessage}</p>
+      </div>
+    )
+  }
+  if (courses.length === 0) return null
+
   return (
-    <tr className="border-b border-border last:border-b-0 hover:bg-surface-hover/50 transition-colors">
-      <td className="px-6 py-4">
-        <div>
-          <span
-            className="font-medium text-text-primary cursor-pointer hover:text-brand-text transition-colors"
-            onClick={onOpenPreview}
-          >
-            {course.name}
-          </span>
-          <span className="ml-2 text-xs text-text-tertiary">
-            by {course.creator}
-          </span>
+    <div className="mb-6">
+      <h2 className="mb-3 text-base font-bold text-text-primary">{title}</h2>
+      <div className="-mx-4 md:-mx-6">
+        <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 no-scrollbar md:px-6">
+          {courses.map((course) => (
+            <CourseCard key={course.id} course={course} {...menuProps} />
+          ))}
+          <div className="w-1 shrink-0" />
         </div>
-      </td>
-      <td className="px-4 py-4">
-        <Badge variant={statusBadgeVariant(course.status)}>
-          {course.status}
-        </Badge>
-      </td>
-      <td className="px-4 py-4 text-center text-text-secondary">
-        {course.doneLessons}
-      </td>
-      <td className="px-4 py-4 text-center text-text-secondary">
-        {course.totalLessons}
-      </td>
-      <td className="px-4 py-4 text-text-tertiary text-sm">
-        {formatDate(course.createdAt)}
-      </td>
-      <td className="px-4 py-4">
-        <div className="flex items-center gap-2">
-          <Button variant="tertiary" size="sm" uppercase={false}>
-            View Saved
-          </Button>
-          <Button variant="primary" size="sm">
-            Review
-          </Button>
-          <CourseMenu
-            course={course}
-            onShare={onShare}
-            onDelete={onDelete}
-            onEditName={onEditName}
-          />
-        </div>
-      </td>
-    </tr>
+      </div>
+    </div>
   )
 }
 
@@ -184,6 +164,7 @@ interface CoursesPageProps {
 
 export function CoursesPage({ onOpenPreview }: CoursesPageProps) {
   const [courses, setCourses] = useState<Course[]>(mockCourses)
+  const [outlineCourse, setOutlineCourse] = useState<Course | null>(null)
 
   async function handleShare(course: Course) {
     const shareData = generateShareLink(course)
@@ -218,7 +199,16 @@ export function CoursesPage({ onOpenPreview }: CoursesPageProps) {
     }
   }
 
-  const menuProps = { onShare: handleShare, onDelete: handleDelete, onEditName: handleEditName, onOpenPreview }
+  const inProgress = courses.filter((c) => c.status === "In Progress")
+  const notStarted = courses.filter((c) => c.status === "Not Started")
+
+  const cardProps = {
+    onShare: handleShare,
+    onDelete: handleDelete,
+    onEditName: handleEditName,
+    onOpenPreview,
+    onOpenOutline: (course: Course) => setOutlineCourse(course),
+  }
 
   return (
     <div className="flex-1 p-4 pb-24 md:p-6 md:pb-6">
@@ -240,54 +230,30 @@ export function CoursesPage({ onOpenPreview }: CoursesPageProps) {
         </Button>
       </div>
 
-      {/* ─── Mobile: Horizontal scroll ─── */}
-      <div className="-mx-4 md:hidden">
-        <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-4 no-scrollbar">
-          {courses.map((course) => (
-            <CourseCard key={course.id} course={course} {...menuProps} />
-          ))}
-          {/* Spacer so last card doesn't hug edge */}
-          <div className="w-1 shrink-0" />
-        </div>
-      </div>
+      {/* ─── Carousels ─── */}
+      <CourseCarousel
+        title="In Progress"
+        courses={inProgress}
+        menuProps={cardProps}
+        emptyMessage="No courses in progress yet."
+      />
+      <CourseCarousel
+        title="Not Started"
+        courses={notStarted}
+        menuProps={cardProps}
+      />
+      <CourseCarousel
+        title="Recommended"
+        courses={recommendedCourses}
+        menuProps={cardProps}
+      />
 
-      {/* ─── Desktop: Table ─── */}
-      <div className="hidden md:block overflow-hidden rounded-xl border border-border bg-surface">
-        <table className="w-full text-left">
-          <thead>
-            <tr className="border-b border-border bg-surface-secondary">
-              <th className="px-6 py-3 text-sm font-semibold text-text-primary">
-                Name
-              </th>
-              <th className="px-4 py-3 text-sm font-semibold text-text-primary">
-                Status
-              </th>
-              <th className="px-4 py-3 text-center text-sm font-semibold text-text-primary">
-                Done Lessons
-              </th>
-              <th className="px-4 py-3 text-center text-sm font-semibold text-text-primary">
-                Total Lessons
-              </th>
-              <th className="px-4 py-3 text-sm font-semibold text-text-primary">
-                Created
-              </th>
-              <th className="px-4 py-3 text-sm font-semibold text-text-primary">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {courses.map((course) => (
-              <CourseRow key={course.id} course={course} {...menuProps} />
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {courses.length === 0 && (
-        <div className="py-12 text-center text-text-tertiary">
-          No courses yet. Create one to get started.
-        </div>
+      {/* Course outline modal */}
+      {outlineCourse && (
+        <CourseOutlineModal
+          course={outlineCourse}
+          onClose={() => setOutlineCourse(null)}
+        />
       )}
     </div>
   )
