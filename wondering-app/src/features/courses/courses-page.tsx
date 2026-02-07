@@ -186,7 +186,7 @@ export function CoursesPage({ onOpenPreview }: CoursesPageProps) {
   const [courses, setCourses] = useState<Course[]>(mockCourses)
 
   async function handleShare(course: Course) {
-    const shareData = generateShareLink(course, "Aidana")
+    const shareData = generateShareLink(course)
     const result = await shareCourse(shareData)
 
     if (result === "copied") {

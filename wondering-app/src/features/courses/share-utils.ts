@@ -3,8 +3,7 @@ import type { Course, ShareLinkData } from "./types"
 const BASE_URL = "https://wondering.app"
 
 export function generateShareLink(
-  course: Course,
-  sharedByName = "Someone"
+  course: Course
 ): ShareLinkData {
   const shareUrl = `${BASE_URL}/course/shared/${course.id}`
   const description = course.name
