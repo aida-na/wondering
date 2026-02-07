@@ -3,9 +3,10 @@ import { Sidebar } from "@/components/sidebar"
 import { BottomNav } from "@/components/bottom-nav"
 import { CoursesPage } from "@/features/courses/courses-page"
 import { SharedCoursePage } from "@/features/courses/shared-course-page"
+import { CoursePreviewPage } from "@/features/courses/course-preview-page"
 import { ToastContainer } from "@/components/ui/toast"
 
-type Page = "home" | "create" | "courses" | "profile" | "shared-course"
+type Page = "home" | "create" | "courses" | "profile" | "shared-course" | "course-preview"
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>("courses")
@@ -25,7 +26,10 @@ function App() {
             onNavigate={(page) => setCurrentPage(page as Page)}
           />
           <main className="flex-1 overflow-auto">
-            {currentPage === "courses" && <CoursesPage />}
+            {currentPage === "courses" && <CoursesPage onOpenPreview={() => setCurrentPage("course-preview")} />}
+            {currentPage === "course-preview" && (
+              <CoursePreviewPage onBack={() => setCurrentPage("courses")} />
+            )}
             {currentPage === "home" && (
               <div className="flex h-full items-center justify-center">
                 <p className="text-text-tertiary">Home — select Courses to see the sharing feature</p>

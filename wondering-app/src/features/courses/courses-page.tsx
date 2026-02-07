@@ -41,6 +41,7 @@ interface CourseMenuProps {
   onShare: (course: Course) => void
   onDelete: (id: string) => void
   onEditName: (id: string) => void
+  onOpenPreview?: () => void
 }
 
 function CourseMenu({ course, onShare, onDelete, onEditName }: CourseMenuProps) {
@@ -78,13 +79,16 @@ function CourseMenu({ course, onShare, onDelete, onEditName }: CourseMenuProps) 
 
 /* ─── Mobile: Course Card ─── */
 
-function CourseCard({ course, onShare, onDelete, onEditName }: CourseMenuProps) {
+function CourseCard({ course, onShare, onDelete, onEditName, onOpenPreview }: CourseMenuProps) {
   return (
     <div className="rounded-xl border border-border bg-surface p-4">
       {/* Top row: name + kebab */}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <h3 className="font-medium text-text-primary leading-snug">
+          <h3
+            className="font-medium text-text-primary leading-snug cursor-pointer hover:text-brand-text transition-colors"
+            onClick={onOpenPreview}
+          >
             {course.name}
           </h3>
           <span className="text-xs text-text-tertiary">by {course.creator}</span>
@@ -122,12 +126,17 @@ function CourseCard({ course, onShare, onDelete, onEditName }: CourseMenuProps) 
 
 /* ─── Desktop: Table Row ─── */
 
-function CourseRow({ course, onShare, onDelete, onEditName }: CourseMenuProps) {
+function CourseRow({ course, onShare, onDelete, onEditName, onOpenPreview }: CourseMenuProps) {
   return (
     <tr className="border-b border-border last:border-b-0 hover:bg-surface-hover/50 transition-colors">
       <td className="px-6 py-4">
         <div>
-          <span className="font-medium text-text-primary">{course.name}</span>
+          <span
+            className="font-medium text-text-primary cursor-pointer hover:text-brand-text transition-colors"
+            onClick={onOpenPreview}
+          >
+            {course.name}
+          </span>
           <span className="ml-2 text-xs text-text-tertiary">
             by {course.creator}
           </span>
@@ -169,7 +178,11 @@ function CourseRow({ course, onShare, onDelete, onEditName }: CourseMenuProps) {
 
 /* ─── Page ─── */
 
-export function CoursesPage() {
+interface CoursesPageProps {
+  onOpenPreview?: () => void
+}
+
+export function CoursesPage({ onOpenPreview }: CoursesPageProps) {
   const [courses, setCourses] = useState<Course[]>(mockCourses)
 
   async function handleShare(course: Course) {
@@ -205,7 +218,7 @@ export function CoursesPage() {
     }
   }
 
-  const menuProps = { onShare: handleShare, onDelete: handleDelete, onEditName: handleEditName }
+  const menuProps = { onShare: handleShare, onDelete: handleDelete, onEditName: handleEditName, onOpenPreview }
 
   return (
     <div className="flex-1 p-4 pb-24 md:p-6 md:pb-6">

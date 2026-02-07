@@ -1,4 +1,4 @@
-import type { Course } from "./types"
+import type { Course, CourseOutline } from "./types"
 
 export const mockCourses: Course[] = [
   {
@@ -57,3 +57,31 @@ export const mockCourses: Course[] = [
     shareCount: 34,
   },
 ]
+
+export const mockCourseOutline: CourseOutline = {
+  courseId: "5",
+  name: "Mental Models for Product Strategy",
+  description:
+    "Master core mental models like First Principles and Inversion to build defensible product roadmaps and prioritize high-impact features.",
+  creator: "Shane Parrish",
+  estimatedMinutes: 20,
+  dailyGoalMinutes: 10,
+  sections: [
+    {
+      id: "s1",
+      title: "Core Models",
+      lessons: [
+        { id: "s1-l1", title: "First Principles" },
+        { id: "s1-l2", title: "Inversion Thinking" },
+      ],
+    },
+    {
+      id: "s2",
+      title: "Strategic Planning",
+      lessons: [
+        { id: "s2-l1", title: "Roadmap Strategy" },
+        { id: "s2-l2", title: "Impact Prioritization" },
+      ],
+    },
+  ],
+}

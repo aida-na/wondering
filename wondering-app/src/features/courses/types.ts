@@ -12,6 +12,27 @@ export interface Course {
   shareCount: number
 }
 
+export interface Lesson {
+  id: string
+  title: string
+}
+
+export interface Section {
+  id: string
+  title: string
+  lessons: Lesson[]
+}
+
+export interface CourseOutline {
+  courseId: string
+  name: string
+  description: string
+  creator: string
+  sections: Section[]
+  estimatedMinutes: number
+  dailyGoalMinutes: number
+}
+
 export interface ShareLinkData {
   courseId: string
   courseName: string
