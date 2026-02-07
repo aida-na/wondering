@@ -54,8 +54,8 @@ function CatalogCard({
         )}
       </div>
 
-      {/* Info */}
-      <h3 className="mt-2.5 text-sm font-semibold leading-snug text-text-primary line-clamp-2 group-hover:text-brand-text transition-colors">
+      {/* Info — fixed height so cards align across the row */}
+      <h3 className="mt-2.5 min-h-[2.5rem] text-sm font-semibold leading-snug text-text-primary line-clamp-2 group-hover:text-brand-text transition-colors">
         {course.name}
       </h3>
       <p className="mt-0.5 text-xs text-text-tertiary truncate">

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { showToast } from "@/components/ui/toast"
-import { BookOpen, User, Layers } from "lucide-react"
+import { BookOpen, User, Layers, ChevronDown, ChevronUp } from "lucide-react"
 import { mockCourses } from "./mock-data"
 import { acceptSharedCourse, checkCourseExists } from "./share-utils"
-import type { Course } from "./types"
+import type { Course, Section } from "./types"
 
 /**
  * Shared Course Landing Page
@@ -24,6 +24,82 @@ const DEMO_SHARED_COURSE = {
   totalLessons: 20,
   description:
     "Master the science of nutrition timing, micronutrient optimization, and energy management. 20 bite-sized lessons based on cutting-edge research.",
+  sections: [
+    {
+      id: "s1",
+      title: "Nutrition Foundations",
+      lessons: [
+        { id: "s1-l1", title: "Macronutrient Basics" },
+        { id: "s1-l2", title: "Micronutrient Essentials" },
+        { id: "s1-l3", title: "Hydration Science" },
+      ],
+    },
+    {
+      id: "s2",
+      title: "Meal Timing & Energy",
+      lessons: [
+        { id: "s2-l1", title: "Circadian Eating" },
+        { id: "s2-l2", title: "Pre- & Post-Workout Fuel" },
+        { id: "s2-l3", title: "Fasting Windows" },
+      ],
+    },
+    {
+      id: "s3",
+      title: "Advanced Optimization",
+      lessons: [
+        { id: "s3-l1", title: "Gut Microbiome & Energy" },
+        { id: "s3-l2", title: "Supplement Stacking" },
+        { id: "s3-l3", title: "Personalized Protocols" },
+      ],
+    },
+  ] satisfies Section[],
+}
+
+/* ─── Section Accordion ─── */
+
+function OutlineSection({
+  section,
+  index,
+}: {
+  section: Section
+  index: number
+}) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div>
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between rounded-lg bg-surface-secondary px-4 py-2.5 text-left transition-colors hover:bg-surface-tertiary"
+      >
+        <div>
+          <span className="text-sm font-semibold text-text-primary">
+            {index + 1}. {section.title}
+          </span>
+          <span className="ml-2 text-xs text-text-tertiary">
+            {section.lessons.length} {section.lessons.length === 1 ? "lesson" : "lessons"}
+          </span>
+        </div>
+        {open ? (
+          <ChevronUp className="size-4 shrink-0 text-text-tertiary" />
+        ) : (
+          <ChevronDown className="size-4 shrink-0 text-text-tertiary" />
+        )}
+      </button>
+      {open && (
+        <div className="mt-1.5 flex flex-col gap-1.5 pl-1">
+          {section.lessons.map((lesson, li) => (
+            <div
+              key={lesson.id}
+              className="rounded-lg border border-border bg-surface px-4 py-2 text-xs text-text-secondary"
+            >
+              {index + 1}.{li + 1}. {lesson.title}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
 }
 
 interface SharedCoursePageProps {
@@ -80,8 +156,8 @@ export function SharedCoursePage({
   }
 
   return (
-    <div className="flex h-full flex-1 items-center justify-center bg-surface p-6">
-      <div className="w-full max-w-md animate-hero-reveal">
+    <div className="flex h-full flex-1 justify-center overflow-auto bg-surface p-6">
+      <div className="my-auto w-full max-w-md animate-hero-reveal">
         {/* Course preview card */}
         <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-lg">
           {/* Header gradient */}
@@ -107,6 +183,13 @@ export function SharedCoursePage({
             <div className="mt-4 flex items-center gap-2 text-sm text-text-tertiary">
               <Layers className="size-4" />
               {DEMO_SHARED_COURSE.totalLessons} lessons
+            </div>
+
+            {/* Course outline */}
+            <div className="mt-5 flex flex-col gap-2">
+              {DEMO_SHARED_COURSE.sections.map((section, idx) => (
+                <OutlineSection key={section.id} section={section} index={idx} />
+              ))}
             </div>
           </div>
 
