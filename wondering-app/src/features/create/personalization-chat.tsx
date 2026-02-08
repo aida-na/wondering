@@ -258,11 +258,11 @@ export function PersonalizationChat({
         )}
       </div>
 
-      {/* Bottom input */}
+      {/* Bottom input — extra padding on mobile so it sits above the bottom nav */}
       {!isCreating && !isLoading && (
         <form
           onSubmit={handleCustomSubmit}
-          className="border-t border-border p-4"
+          className="border-t border-border p-4 pb-24 safe-area-bottom md:pb-4"
         >
           <div className="flex gap-2">
             <input

@@ -19,7 +19,8 @@ export function unregisterPublishedCourse(courseId: string): void {
  *
  * Response shape: { courses: CatalogCourse[], categories: string[] }
  *
- * Filter pipeline: tab (base dataset) → category → search → return
+ * - When search is empty: tab → category → return
+ * - When search is set: search across ALL tabs and genres, then apply tab filter, then category filter
  */
 export async function fetchCatalogCourses(
   params: CatalogFetchParams
@@ -27,29 +28,57 @@ export async function fetchCatalogCourses(
   // Simulate network latency
   await new Promise((resolve) => setTimeout(resolve, 300))
 
-  let courses = getBaseDataset(params.tab)
+  const tabDataset = getBaseDataset(params.tab)
+  const hasSearch = Boolean(params.search?.trim())
 
-  // Category filter
-  if (params.category && params.category !== "For You" && params.category !== "All") {
-    courses = courses.filter((c) => c.category === params.category)
+  let courses: CatalogCourse[]
+
+  if (hasSearch) {
+    const q = params.search!.toLowerCase()
+    const searchMatches = (c: CatalogCourse) =>
+      c.name.toLowerCase().includes(q) ||
+      c.creator.toLowerCase().includes(q) ||
+      c.category.toLowerCase().includes(q)
+
+    const allSearchable = getAllSearchableCourses()
+    const searchResults = allSearchable.filter(searchMatches)
+
+    const tabIds = new Set(tabDataset.map((c) => c.id))
+    courses = searchResults.filter((c) => tabIds.has(c.id))
+
+    if (params.category && params.category !== "For You" && params.category !== "All") {
+      courses = courses.filter((c) => c.category === params.category)
+    }
+  } else {
+    courses = [...tabDataset]
+    if (params.category && params.category !== "For You" && params.category !== "All") {
+      courses = courses.filter((c) => c.category === params.category)
+    }
   }
 
-  // Search filter
-  if (params.search?.trim()) {
-    const q = params.search.toLowerCase()
-    courses = courses.filter(
-      (c) =>
-        c.name.toLowerCase().includes(q) ||
-        c.creator.toLowerCase().includes(q) ||
-        c.category.toLowerCase().includes(q)
-    )
-  }
-
-  // Derive available categories from unfiltered tab dataset (before category/search)
-  const allTabCourses = getBaseDataset(params.tab)
-  const categories = deriveCategories(allTabCourses)
+  const categories = deriveCategories(tabDataset)
 
   return { courses, categories }
+}
+
+function getAllSearchableCourses(): CatalogCourse[] {
+  const seen = new Set<string>()
+  const result: CatalogCourse[] = []
+  const tabs: CatalogFetchParams["tab"][] = [
+    "recommended",
+    "all",
+    "famous-authors",
+    "my-friends",
+    "my-published",
+  ]
+  for (const tab of tabs) {
+    for (const c of getBaseDataset(tab)) {
+      if (seen.has(c.id)) continue
+      seen.add(c.id)
+      result.push(c)
+    }
+  }
+  return result
 }
 
 function getBaseDataset(tab: CatalogFetchParams["tab"]): CatalogCourse[] {

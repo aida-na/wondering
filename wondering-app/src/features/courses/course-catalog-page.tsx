@@ -116,11 +116,10 @@ export function CourseCatalogPage({
     })
   }, [activeTab, activeCategory, search])
 
-  // Reset category when switching tabs
+  // Reset category when switching tabs (keep search so filters apply on top of it)
   const handleTabChange = (tab: CatalogTab) => {
     setActiveTab(tab)
     setActiveCategory("For You")
-    setSearch("")
   }
 
   // Group by category
@@ -150,6 +149,18 @@ export function CourseCatalogPage({
           </button>
         </div>
 
+        {/* Search */}
+        <div className="relative mt-3">
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-tertiary" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by title, author, or tag..."
+            className="w-full rounded-xl border border-border bg-surface py-2.5 pl-10 pr-4 text-sm text-text-primary placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
+          />
+        </div>
+
         {/* Tab bar */}
         <div className="-mx-4 mt-3 flex gap-1 overflow-x-auto px-4 no-scrollbar md:-mx-6 md:px-6">
           {TABS.map((tab) => {
@@ -170,18 +181,6 @@ export function CourseCatalogPage({
               </button>
             )
           })}
-        </div>
-
-        {/* Search */}
-        <div className="relative mt-3">
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-tertiary" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by title, author, or tag..."
-            className="w-full rounded-xl border border-border bg-surface py-2.5 pl-10 pr-4 text-sm text-text-primary placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
-          />
         </div>
 
         {/* Category chips */}
