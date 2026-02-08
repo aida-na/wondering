@@ -10,6 +10,8 @@
 | `is_shared` | `boolean` | `false` | Whether the course has ever been shared |
 | `share_count` | `integer` | `0` | Number of users who have added this course via share link |
 | `share_token` | `text` (unique) | `null` | URL-safe token for the share link (generated on first share) |
+| `status` | `text` | `'Not Started'` | One of: `'Not Started'`, `'In Progress'`, `'Completed'` (UI: Courses page shows "Finished" for Completed) |
+| `is_published` | `boolean` | `false` | Whether the user has published this course to the catalog (Library → My Published) |
 
 ### `shared_course_events` table (new)
 

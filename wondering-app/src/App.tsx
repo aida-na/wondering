@@ -9,6 +9,7 @@ import { CreatePage } from "@/features/create/create-page"
 import { ToastContainer } from "@/components/ui/toast"
 import { LandingPage } from "@/components/landing-page"
 import type { CatalogCourse, Course } from "@/features/courses/types"
+import { mockCourses } from "@/features/courses/mock-data"
 
 type Page = "home" | "create" | "courses" | "profile" | "shared-course" | "course-catalog" | "course-preview"
 
@@ -17,6 +18,7 @@ function App() {
   const [catalogReturnTo, setCatalogReturnTo] = useState<"courses" | "create" | null>(null)
   const [catalogCourseForCreate, setCatalogCourseForCreate] = useState<CatalogCourse | null>(null)
   const [newCourseForList, setNewCourseForList] = useState<Course | null>(null)
+  const [userCourses, setUserCourses] = useState<Course[]>(mockCourses)
 
   const handleBrowseCatalog = () => {
     setCatalogReturnTo("create")
@@ -69,6 +71,8 @@ function App() {
           <main className="flex-1 overflow-auto">
             {currentPage === "courses" && (
               <CoursesPage
+                courses={userCourses}
+                setCourses={setUserCourses}
                 onOpenPreview={() => { setCatalogReturnTo("courses"); setCurrentPage("course-catalog") }}
                 newCourse={newCourseForList}
                 onConsumedNewCourse={handleConsumedNewCourse}
@@ -78,6 +82,7 @@ function App() {
               <CourseCatalogPage
                 onClose={handleCatalogClose}
                 onSelectCourse={handleCatalogSelect}
+                userCourses={userCourses}
               />
             )}
             {currentPage === "course-preview" && (

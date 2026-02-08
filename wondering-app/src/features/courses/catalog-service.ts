@@ -1,5 +1,5 @@
 import type { CatalogCourse, CatalogFetchParams, CatalogFetchResult } from "./types"
-import { mockCatalogCourses, mockFriendCourses, mockPublishedCourses } from "./mock-data"
+import { mockCatalogCourses, mockFriendCourses, mockPublishedCourses, recommendedCatalogIds } from "./mock-data"
 
 let userPublishedCourses: CatalogCourse[] = [...mockPublishedCourses]
 
@@ -84,9 +84,9 @@ function getAllSearchableCourses(): CatalogCourse[] {
 function getBaseDataset(tab: CatalogFetchParams["tab"]): CatalogCourse[] {
   switch (tab) {
     case "recommended":
-      return [...mockCatalogCourses]
-        .filter((c) => c.recommendedScore != null)
-        .sort((a, b) => (b.recommendedScore ?? 0) - (a.recommendedScore ?? 0))
+      return mockCatalogCourses.filter((c) =>
+        (recommendedCatalogIds as readonly string[]).includes(c.id)
+      )
     case "all":
       return [...mockCatalogCourses]
     case "famous-authors":

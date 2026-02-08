@@ -61,65 +61,14 @@ export const mockCourses: Course[] = [
     shareCount: 34,
     isPublished: true,
   },
-]
-
-export const recommendedCourses: Course[] = [
   {
-    id: "r1",
-    name: "The Great Mental Models Volume 1",
-    creator: "Shane Parrish",
-    status: "Not Started",
-    doneLessons: 0,
-    totalLessons: 18,
-    createdAt: "2026-02-06",
-    isShared: false,
-    shareCount: 0,
-    isPublished: true,
-  },
-  {
-    id: "r2",
-    name: "Never Split the Difference",
-    creator: "Chris Voss",
-    status: "Not Started",
-    doneLessons: 0,
-    totalLessons: 14,
-    createdAt: "2026-02-06",
-    isShared: false,
-    shareCount: 0,
-    isPublished: true,
-  },
-  {
-    id: "r3",
-    name: "The Psychology of Money",
-    creator: "Morgan Housel",
-    status: "Not Started",
-    doneLessons: 0,
+    id: "6",
+    name: "Atomic Habits",
+    creator: "James Clear",
+    status: "Completed",
+    doneLessons: 20,
     totalLessons: 20,
-    createdAt: "2026-02-06",
-    isShared: false,
-    shareCount: 0,
-    isPublished: true,
-  },
-  {
-    id: "r4",
-    name: "Astrophysics for People in a Hurry",
-    creator: "Neil deGrasse Tyson",
-    status: "Not Started",
-    doneLessons: 0,
-    totalLessons: 12,
-    createdAt: "2026-02-06",
-    isShared: false,
-    shareCount: 0,
-    isPublished: true,
-  },
-  {
-    id: "r5",
-    name: "The Design of Everyday Things",
-    creator: "Don Norman",
-    status: "Not Started",
-    doneLessons: 0,
-    totalLessons: 16,
-    createdAt: "2026-02-06",
+    createdAt: "2026-01-15",
     isShared: false,
     shareCount: 0,
     isPublished: true,
@@ -165,6 +114,32 @@ export const mockCatalogCourses: CatalogCourse[] = [
   { id: "c24", name: "Human Compatible", creator: "Stuart Russell", category: "AI" },
   { id: "c25", name: "AI Superpowers", creator: "Kai-Fu Lee", category: "AI", popular: true },
 ]
+
+/** Catalog course IDs that appear as "Recommended" in both Courses page and Library (catalog). */
+export const recommendedCatalogIds = ["c1", "c2", "c5", "c11", "c16"] as const
+
+function courseFromCatalog(c: CatalogCourse): Course {
+  return {
+    id: c.id,
+    name: c.name,
+    creator: c.creator,
+    status: "Not Started",
+    doneLessons: 0,
+    totalLessons: 12,
+    createdAt: new Date().toISOString().slice(0, 10),
+    isShared: false,
+    shareCount: 0,
+    isPublished: true,
+  }
+}
+
+/** Recommended courses (same set as catalog "Recommended" tab). Derived from catalog. */
+export const recommendedCourses: Course[] = (() => {
+  const ids = new Set(recommendedCatalogIds)
+  return mockCatalogCourses
+    .filter((c) => ids.has(c.id as (typeof recommendedCatalogIds)[number]))
+    .map((c) => courseFromCatalog(c))
+})()
 
 export const mockFriendCourses: CatalogCourse[] = [
   { id: "f1", name: "Thinking, Fast and Slow", creator: "Daniel Kahneman", category: "Psychology", popular: true, sharedByFriend: "Alex M." },

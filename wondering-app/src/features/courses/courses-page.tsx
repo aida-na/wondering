@@ -11,7 +11,7 @@ import {
 import { showToast } from "@/components/ui/toast"
 import { MoreVertical, Pencil, Trash2, Share2, Users, Plus, Globe, Check } from "lucide-react"
 import type { Course, CourseStatus } from "./types"
-import { mockCourses, recommendedCourses } from "./mock-data"
+import { recommendedCourses } from "./mock-data"
 import { generateShareLink, shareCourse } from "./share-utils"
 import { registerPublishedCourse, unregisterPublishedCourse } from "./catalog-service"
 import { CourseOutlineModal } from "./course-outline-modal"
@@ -184,13 +184,20 @@ function CourseCarousel({
 /* ─── Page ─── */
 
 interface CoursesPageProps {
+  courses: Course[]
+  setCourses: React.Dispatch<React.SetStateAction<Course[]>>
   onOpenPreview?: () => void
   newCourse?: Course | null
   onConsumedNewCourse?: () => void
 }
 
-export function CoursesPage({ onOpenPreview, newCourse, onConsumedNewCourse }: CoursesPageProps) {
-  const [courses, setCourses] = useState<Course[]>(mockCourses)
+export function CoursesPage({
+  courses,
+  setCourses,
+  onOpenPreview,
+  newCourse,
+  onConsumedNewCourse,
+}: CoursesPageProps) {
   const [outlineCourse, setOutlineCourse] = useState<Course | null>(null)
 
   useEffect(() => {
@@ -198,7 +205,7 @@ export function CoursesPage({ onOpenPreview, newCourse, onConsumedNewCourse }: C
     setCourses((prev) => [newCourse, ...prev])
     showToast("Course created!", "success")
     onConsumedNewCourse?.()
-  }, [newCourse, onConsumedNewCourse])
+  }, [newCourse, onConsumedNewCourse, setCourses])
 
   async function handleShare(course: Course) {
     const shareData = generateShareLink(course)
@@ -261,6 +268,7 @@ export function CoursesPage({ onOpenPreview, newCourse, onConsumedNewCourse }: C
 
   const inProgress = courses.filter((c) => c.status === "In Progress")
   const notStarted = courses.filter((c) => c.status === "Not Started")
+  const completed = courses.filter((c) => c.status === "Completed")
 
   const cardProps = {
     onShare: handleShare,
@@ -303,6 +311,12 @@ export function CoursesPage({ onOpenPreview, newCourse, onConsumedNewCourse }: C
         title="Not Started"
         courses={notStarted}
         menuProps={cardProps}
+      />
+      <CourseCarousel
+        title="Finished"
+        courses={completed}
+        menuProps={cardProps}
+        emptyMessage="No completed courses yet."
       />
       <CourseCarousel
         title="Recommended"

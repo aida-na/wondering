@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef } from "react"
 import { Search, X, BookOpen, Star, Globe, Award, Users, Pencil, Loader2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { fetchCatalogCourses } from "./catalog-service"
-import type { CatalogCourse, CatalogTab } from "./types"
+import type { CatalogCourse, CatalogTab, Course, CourseStatus } from "./types"
 
 /* ─── Deterministic pastel background per course id ─── */
 
@@ -38,10 +38,21 @@ const TABS: { id: CatalogTab; label: string; icon: typeof Star }[] = [
 function CatalogCard({
   course,
   onSelect,
+  libraryStatus,
 }: {
   course: CatalogCourse
   onSelect: (course: CatalogCourse) => void
+  libraryStatus?: CourseStatus
 }) {
+  const libraryLabel =
+    libraryStatus === "In Progress"
+      ? "In progress"
+      : libraryStatus === "Not Started"
+        ? "In courses"
+        : libraryStatus === "Completed"
+          ? "Finished"
+          : null
+
   return (
     <button
       onClick={() => onSelect(course)}
@@ -54,14 +65,24 @@ function CatalogCard({
         <div className="flex h-full items-center justify-center">
           <BookOpen className="size-10 text-text-tertiary/40" />
         </div>
-        {course.popular && (
-          <Badge
-            variant="success"
-            className="absolute right-2 top-2 rounded-md px-2 py-0.5 text-[11px]"
-          >
-            Most Popular
-          </Badge>
-        )}
+        <div className="absolute right-2 top-2 flex flex-col gap-1 items-end">
+          {libraryLabel && (
+            <Badge
+              variant={libraryStatus === "Completed" ? "success" : "brand"}
+              className="rounded-md px-2 py-0.5 text-[11px]"
+            >
+              {libraryLabel}
+            </Badge>
+          )}
+          {course.popular && (
+            <Badge
+              variant="success"
+              className="rounded-md px-2 py-0.5 text-[11px]"
+            >
+              Most Popular
+            </Badge>
+          )}
+        </div>
       </div>
 
       {/* Info */}
@@ -85,11 +106,25 @@ function CatalogCard({
 interface CourseCatalogPageProps {
   onClose: () => void
   onSelectCourse: (course: CatalogCourse) => void
+  userCourses?: Course[]
+}
+
+function getLibraryStatus(
+  catalogCourse: CatalogCourse,
+  userCourses: Course[]
+): CourseStatus | undefined {
+  const u = userCourses.find(
+    (c) =>
+      c.id === catalogCourse.id ||
+      (c.name === catalogCourse.name && c.creator === catalogCourse.creator)
+  )
+  return u?.status
 }
 
 export function CourseCatalogPage({
   onClose,
   onSelectCourse,
+  userCourses = [],
 }: CourseCatalogPageProps) {
   const [activeTab, setActiveTab] = useState<CatalogTab>("recommended")
   const [search, setSearch] = useState("")
@@ -240,6 +275,7 @@ export function CourseCatalogPage({
                     key={course.id}
                     course={course}
                     onSelect={onSelectCourse}
+                    libraryStatus={getLibraryStatus(course, userCourses)}
                   />
                 ))}
               </div>
