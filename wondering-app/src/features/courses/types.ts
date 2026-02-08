@@ -63,6 +63,28 @@ export interface CatalogCourse {
   creator: string
   category: string
   popular?: boolean
+  isFamousAuthor?: boolean
+  sharedByFriend?: string
+  isPublishedByUser?: boolean
+  recommendedScore?: number
+}
+
+export type CatalogTab =
+  | "recommended"
+  | "all"
+  | "famous-authors"
+  | "my-friends"
+  | "my-published"
+
+export interface CatalogFetchParams {
+  tab: CatalogTab
+  category?: string
+  search?: string
+}
+
+export interface CatalogFetchResult {
+  courses: CatalogCourse[]
+  categories: string[]
 }
 
 export interface ShareLinkData {

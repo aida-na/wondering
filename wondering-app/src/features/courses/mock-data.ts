@@ -125,35 +125,49 @@ export const catalogCategories = [
 
 export const mockCatalogCourses: CatalogCourse[] = [
   // Psychology
-  { id: "c1", name: "The Great Mental Models Volume 1", creator: "Shane Parrish and Rhiannon Beaubien", category: "Psychology", popular: true },
-  { id: "c2", name: "Never Split the Difference", creator: "Chris Voss", category: "Psychology", popular: true },
-  { id: "c3", name: "Hooked: How to Build Habit-Forming Products", creator: "Nir Eyal", category: "Psychology", popular: true },
+  { id: "c1", name: "The Great Mental Models Volume 1", creator: "Shane Parrish and Rhiannon Beaubien", category: "Psychology", popular: true, recommendedScore: 0.95 },
+  { id: "c2", name: "Never Split the Difference", creator: "Chris Voss", category: "Psychology", popular: true, recommendedScore: 0.88 },
+  { id: "c3", name: "Hooked: How to Build Habit-Forming Products", creator: "Nir Eyal", category: "Psychology", popular: true, isFamousAuthor: true, recommendedScore: 0.82 },
   { id: "c4", name: "100 Things Every Designer Needs to Know About People", creator: "Susan M. Weinschenk", category: "Psychology", popular: true },
-  { id: "c5", name: "The Psychology of Money", creator: "Morgan Housel", category: "Psychology", popular: true },
+  { id: "c5", name: "The Psychology of Money", creator: "Morgan Housel", category: "Psychology", popular: true, isFamousAuthor: true, recommendedScore: 0.91 },
   // Philosophy
-  { id: "c6", name: "The Creative Act: A Way of Being", creator: "Rick Rubin", category: "Philosophy", popular: true },
-  { id: "c7", name: "The Almanack of Naval Ravikant", creator: "Eric Jorgenson", category: "Philosophy", popular: true },
+  { id: "c6", name: "The Creative Act: A Way of Being", creator: "Rick Rubin", category: "Philosophy", popular: true, isFamousAuthor: true, recommendedScore: 0.87 },
+  { id: "c7", name: "The Almanack of Naval Ravikant", creator: "Eric Jorgenson", category: "Philosophy", popular: true, recommendedScore: 0.78 },
   { id: "c8", name: "Great Thinkers", creator: "The School of Life", category: "Philosophy", popular: true },
   { id: "c9", name: "A Little History of Philosophy", creator: "Nigel Warburton", category: "Philosophy", popular: true },
   { id: "c10", name: "The Timeless Way of Building", creator: "Christopher Alexander", category: "Philosophy", popular: true },
   // Science
-  { id: "c11", name: "Astrophysics for People in a Hurry", creator: "Neil deGrasse Tyson", category: "Science", popular: true },
+  { id: "c11", name: "Astrophysics for People in a Hurry", creator: "Neil deGrasse Tyson", category: "Science", popular: true, isFamousAuthor: true, recommendedScore: 0.93 },
   { id: "c12", name: "A Short History of Nearly Everything", creator: "Bill Bryson", category: "Science", popular: true },
   { id: "c13", name: "The Gene: An Intimate History", creator: "Siddhartha Mukherjee", category: "Science" },
-  { id: "c14", name: "Sapiens: A Brief History of Humankind", creator: "Yuval Noah Harari", category: "Science", popular: true },
+  { id: "c14", name: "Sapiens: A Brief History of Humankind", creator: "Yuval Noah Harari", category: "Science", popular: true, isFamousAuthor: true, recommendedScore: 0.96 },
   { id: "c15", name: "The Elegant Universe", creator: "Brian Greene", category: "Science" },
   // Design
-  { id: "c16", name: "The Design of Everyday Things", creator: "Don Norman", category: "Design", popular: true },
+  { id: "c16", name: "The Design of Everyday Things", creator: "Don Norman", category: "Design", popular: true, isFamousAuthor: true, recommendedScore: 0.89 },
   { id: "c17", name: "Refactoring UI", creator: "Adam Wathan & Steve Schoger", category: "Design", popular: true },
   { id: "c18", name: "Don't Make Me Think", creator: "Steve Krug", category: "Design" },
   { id: "c19", name: "Grid Systems in Graphic Design", creator: "Josef Müller-Brockmann", category: "Design" },
   { id: "c20", name: "Designing Interfaces", creator: "Jenifer Tidwell", category: "Design", popular: true },
   // AI
-  { id: "c21", name: "Life 3.0", creator: "Max Tegmark", category: "AI", popular: true },
-  { id: "c22", name: "Superintelligence", creator: "Nick Bostrom", category: "AI" },
-  { id: "c23", name: "The Alignment Problem", creator: "Brian Christian", category: "AI", popular: true },
+  { id: "c21", name: "Life 3.0", creator: "Max Tegmark", category: "AI", popular: true, recommendedScore: 0.75 },
+  { id: "c22", name: "Superintelligence", creator: "Nick Bostrom", category: "AI", isFamousAuthor: true },
+  { id: "c23", name: "The Alignment Problem", creator: "Brian Christian", category: "AI", popular: true, recommendedScore: 0.80 },
   { id: "c24", name: "Human Compatible", creator: "Stuart Russell", category: "AI" },
   { id: "c25", name: "AI Superpowers", creator: "Kai-Fu Lee", category: "AI", popular: true },
+]
+
+export const mockFriendCourses: CatalogCourse[] = [
+  { id: "f1", name: "Thinking, Fast and Slow", creator: "Daniel Kahneman", category: "Psychology", popular: true, sharedByFriend: "Alex M." },
+  { id: "f2", name: "The Art of Strategy", creator: "Avinash K. Dixit", category: "Business", sharedByFriend: "Mia K." },
+  { id: "f3", name: "Atomic Habits", creator: "James Clear", category: "Psychology", popular: true, sharedByFriend: "Jordan T.", recommendedScore: 0.92 },
+  { id: "f4", name: "Deep Work", creator: "Cal Newport", category: "Learning", sharedByFriend: "Alex M." },
+  { id: "f5", name: "The Structure of Scientific Revolutions", creator: "Thomas Kuhn", category: "Science", sharedByFriend: "Sam R." },
+]
+
+export const mockPublishedCourses: CatalogCourse[] = [
+  { id: "p1", name: "Intro to Product Thinking", creator: "You", category: "Business", isPublishedByUser: true },
+  { id: "p2", name: "Design Systems for Startups", creator: "You", category: "Design", isPublishedByUser: true },
+  { id: "p3", name: "Behavioral Psychology in UX", creator: "You", category: "Psychology", isPublishedByUser: true },
 ]
 
 export const mockCourseOutline: CourseOutline = {

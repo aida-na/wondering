@@ -145,11 +145,12 @@ function CourseCarousel({
     <div className="mb-6">
       <h2 className="mb-3 text-base font-bold text-text-primary">{title}</h2>
       <div className="-mx-4 md:-mx-6">
-        <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 no-scrollbar md:px-6">
+        <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 no-scrollbar">
+          <div className="min-w-1 shrink-0 md:min-w-3" />
           {courses.map((course) => (
             <CourseCard key={course.id} course={course} {...menuProps} />
           ))}
-          <div className="w-1 shrink-0" />
+          <div className="min-w-1 shrink-0 md:min-w-3" />
         </div>
       </div>
     </div>

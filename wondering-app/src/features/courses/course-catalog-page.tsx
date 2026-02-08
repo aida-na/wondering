@@ -1,8 +1,8 @@
-import { useState, useMemo } from "react"
-import { Search, X, BookOpen } from "lucide-react"
+import { useState, useEffect, useMemo, useRef } from "react"
+import { Search, X, BookOpen, Star, Globe, Award, Users, Pencil, Loader2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import { mockCatalogCourses, catalogCategories } from "./mock-data"
-import type { CatalogCourse } from "./types"
+import { fetchCatalogCourses } from "./catalog-service"
+import type { CatalogCourse, CatalogTab } from "./types"
 
 /* ─── Deterministic pastel background per course id ─── */
 
@@ -22,6 +22,16 @@ function cardColor(id: string) {
   for (const ch of id) hash = ch.charCodeAt(0) + ((hash << 5) - hash)
   return CARD_COLORS[Math.abs(hash) % CARD_COLORS.length]
 }
+
+/* ─── Tab config ─── */
+
+const TABS: { id: CatalogTab; label: string; icon: typeof Star }[] = [
+  { id: "recommended", label: "Recommended", icon: Star },
+  { id: "all", label: "All", icon: Globe },
+  { id: "famous-authors", label: "Famous Authors", icon: Award },
+  { id: "my-friends", label: "My Friends", icon: Users },
+  { id: "my-published", label: "My Published", icon: Pencil },
+]
 
 /* ─── Course Card ─── */
 
@@ -54,13 +64,18 @@ function CatalogCard({
         )}
       </div>
 
-      {/* Info — fixed height so cards align across the row */}
+      {/* Info */}
       <h3 className="mt-2.5 min-h-[2.5rem] text-sm font-semibold leading-snug text-text-primary line-clamp-2 group-hover:text-brand-text transition-colors">
         {course.name}
       </h3>
       <p className="mt-0.5 text-xs text-text-tertiary truncate">
         {course.creator}
       </p>
+      {course.sharedByFriend && (
+        <p className="mt-0.5 text-[11px] font-medium text-brand-text truncate">
+          Shared by {course.sharedByFriend}
+        </p>
+      )}
     </button>
   )
 }
@@ -76,39 +91,48 @@ export function CourseCatalogPage({
   onClose,
   onSelectCourse,
 }: CourseCatalogPageProps) {
+  const [activeTab, setActiveTab] = useState<CatalogTab>("recommended")
   const [search, setSearch] = useState("")
   const [activeCategory, setActiveCategory] = useState("For You")
+  const [courses, setCourses] = useState<CatalogCourse[]>([])
+  const [categories, setCategories] = useState<string[]>([])
+  const [loading, setLoading] = useState(true)
+  const fetchId = useRef(0)
 
-  const filteredCourses = useMemo(() => {
-    let courses = mockCatalogCourses
+  // Fetch courses when tab, category, or search changes
+  useEffect(() => {
+    const id = ++fetchId.current
+    setLoading(true)
 
-    if (search.trim()) {
-      const q = search.toLowerCase()
-      courses = courses.filter(
-        (c) =>
-          c.name.toLowerCase().includes(q) ||
-          c.creator.toLowerCase().includes(q) ||
-          c.category.toLowerCase().includes(q)
-      )
-    }
+    fetchCatalogCourses({
+      tab: activeTab,
+      category: activeCategory,
+      search,
+    }).then((result) => {
+      if (id !== fetchId.current) return // stale request
+      setCourses(result.courses)
+      setCategories(result.categories)
+      setLoading(false)
+    })
+  }, [activeTab, activeCategory, search])
 
-    if (activeCategory !== "For You" && activeCategory !== "All") {
-      courses = courses.filter((c) => c.category === activeCategory)
-    }
-
-    return courses
-  }, [search, activeCategory])
+  // Reset category when switching tabs
+  const handleTabChange = (tab: CatalogTab) => {
+    setActiveTab(tab)
+    setActiveCategory("For You")
+    setSearch("")
+  }
 
   // Group by category
   const grouped = useMemo(() => {
     const map = new Map<string, CatalogCourse[]>()
-    for (const c of filteredCourses) {
+    for (const c of courses) {
       const list = map.get(c.category) ?? []
       list.push(c)
       map.set(c.category, list)
     }
     return Array.from(map.entries())
-  }, [filteredCourses])
+  }, [courses])
 
   return (
     <div className="flex-1 overflow-auto">
@@ -126,6 +150,28 @@ export function CourseCatalogPage({
           </button>
         </div>
 
+        {/* Tab bar */}
+        <div className="-mx-4 mt-3 flex gap-1 overflow-x-auto px-4 no-scrollbar md:-mx-6 md:px-6">
+          {TABS.map((tab) => {
+            const Icon = tab.icon
+            const isActive = activeTab === tab.id
+            return (
+              <button
+                key={tab.id}
+                onClick={() => handleTabChange(tab.id)}
+                className={`flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
+                  isActive
+                    ? "bg-brand-bg text-brand-text border border-brand-border"
+                    : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
+                }`}
+              >
+                <Icon className="size-3.5" />
+                {tab.label}
+              </button>
+            )
+          })}
+        </div>
+
         {/* Search */}
         <div className="relative mt-3">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-tertiary" />
@@ -140,7 +186,7 @@ export function CourseCatalogPage({
 
         {/* Category chips */}
         <div className="-mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-0.5 no-scrollbar md:-mx-6 md:px-6">
-          {catalogCategories.map((cat) => (
+          {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
@@ -156,36 +202,50 @@ export function CourseCatalogPage({
         </div>
       </div>
 
-      {/* Course grid by category */}
+      {/* Content area */}
       <div className="p-4 pb-24 md:p-6 md:pb-6">
-        {grouped.length === 0 && (
-          <div className="py-12 text-center text-text-tertiary">
-            No courses found for "{search}"
+        {/* Loading state */}
+        {loading && (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="size-6 animate-spin text-text-tertiary" />
           </div>
         )}
 
-        {grouped.map(([category, courses]) => (
-          <div key={category} className="mb-8 last:mb-0">
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-base font-bold text-text-primary">
-                {category}
-              </h2>
-              <button className="text-xs font-medium text-text-secondary hover:text-text-primary transition-colors">
-                View All
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-              {courses.map((course) => (
-                <CatalogCard
-                  key={course.id}
-                  course={course}
-                  onSelect={onSelectCourse}
-                />
-              ))}
-            </div>
+        {/* Empty state */}
+        {!loading && grouped.length === 0 && (
+          <div className="py-12 text-center text-text-tertiary">
+            {activeTab === "my-published"
+              ? "You haven't published any courses yet."
+              : search
+                ? `No courses found for "${search}"`
+                : "No courses in this category."}
           </div>
-        ))}
+        )}
+
+        {/* Course grid by category */}
+        {!loading &&
+          grouped.map(([category, groupCourses]) => (
+            <div key={category} className="mb-8 last:mb-0">
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="text-base font-bold text-text-primary">
+                  {category}
+                </h2>
+                <button className="text-xs font-medium text-text-secondary hover:text-text-primary transition-colors">
+                  View All
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                {groupCourses.map((course) => (
+                  <CatalogCard
+                    key={course.id}
+                    course={course}
+                    onSelect={onSelectCourse}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
       </div>
     </div>
   )
