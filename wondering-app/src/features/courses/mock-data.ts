@@ -11,6 +11,7 @@ export const mockCourses: Course[] = [
     createdAt: "2026-02-04",
     isShared: true,
     shareCount: 12,
+    isPublished: true,
   },
   {
     id: "2",
@@ -22,6 +23,7 @@ export const mockCourses: Course[] = [
     createdAt: "2026-02-04",
     isShared: false,
     shareCount: 0,
+    isPublished: true,
   },
   {
     id: "3",
@@ -33,6 +35,7 @@ export const mockCourses: Course[] = [
     createdAt: "2026-01-30",
     isShared: true,
     shareCount: 5,
+    isPublished: true,
   },
   {
     id: "4",
@@ -44,6 +47,7 @@ export const mockCourses: Course[] = [
     createdAt: "2026-02-03",
     isShared: false,
     shareCount: 0,
+    isPublished: true,
   },
   {
     id: "5",
@@ -55,6 +59,7 @@ export const mockCourses: Course[] = [
     createdAt: "2026-01-30",
     isShared: true,
     shareCount: 34,
+    isPublished: true,
   },
 ]
 
@@ -69,6 +74,7 @@ export const recommendedCourses: Course[] = [
     createdAt: "2026-02-06",
     isShared: false,
     shareCount: 0,
+    isPublished: true,
   },
   {
     id: "r2",
@@ -80,6 +86,7 @@ export const recommendedCourses: Course[] = [
     createdAt: "2026-02-06",
     isShared: false,
     shareCount: 0,
+    isPublished: true,
   },
   {
     id: "r3",
@@ -91,6 +98,7 @@ export const recommendedCourses: Course[] = [
     createdAt: "2026-02-06",
     isShared: false,
     shareCount: 0,
+    isPublished: true,
   },
   {
     id: "r4",
@@ -102,6 +110,7 @@ export const recommendedCourses: Course[] = [
     createdAt: "2026-02-06",
     isShared: false,
     shareCount: 0,
+    isPublished: true,
   },
   {
     id: "r5",
@@ -113,6 +122,7 @@ export const recommendedCourses: Course[] = [
     createdAt: "2026-02-06",
     isShared: false,
     shareCount: 0,
+    isPublished: true,
   },
 ]
 

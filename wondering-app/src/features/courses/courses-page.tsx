@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -9,10 +9,11 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import { showToast } from "@/components/ui/toast"
-import { MoreVertical, Pencil, Trash2, Share2, Users, Plus } from "lucide-react"
+import { MoreVertical, Pencil, Trash2, Share2, Users, Plus, Globe, Check } from "lucide-react"
 import type { Course, CourseStatus } from "./types"
 import { mockCourses, recommendedCourses } from "./mock-data"
 import { generateShareLink, shareCourse } from "./share-utils"
+import { registerPublishedCourse } from "./catalog-service"
 import { CourseOutlineModal } from "./course-outline-modal"
 
 function statusBadgeVariant(status: CourseStatus) {
@@ -32,13 +33,14 @@ function statusBadgeVariant(status: CourseStatus) {
 interface CourseMenuProps {
   course: Course
   onShare: (course: Course) => void
+  onPublish: (id: string) => void
   onDelete: (id: string) => void
   onEditName: (id: string) => void
   onOpenPreview?: () => void
   onOpenOutline?: (course: Course) => void
 }
 
-function CourseMenu({ course, onShare, onDelete, onEditName }: CourseMenuProps) {
+function CourseMenu({ course, onShare, onPublish, onDelete, onEditName }: CourseMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -61,6 +63,17 @@ function CourseMenu({ course, onShare, onDelete, onEditName }: CourseMenuProps) 
             </span>
           )}
         </DropdownMenuItem>
+        {!course.isPublished ? (
+          <DropdownMenuItem onSelect={() => onPublish(course.id)}>
+            <Globe className="size-4 text-text-tertiary" />
+            Publish
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem disabled className="opacity-70 cursor-default">
+            <Check className="size-4 text-text-tertiary" />
+            Published ✓
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem destructive onSelect={() => onDelete(course.id)}>
           <Trash2 className="size-4" />
@@ -73,7 +86,7 @@ function CourseMenu({ course, onShare, onDelete, onEditName }: CourseMenuProps) 
 
 /* ─── Mobile: Course Card ─── */
 
-function CourseCard({ course, onShare, onDelete, onEditName, onOpenOutline }: CourseMenuProps) {
+function CourseCard({ course, onShare, onPublish, onDelete, onEditName, onOpenOutline }: CourseMenuProps) {
   return (
     <div
       className="w-56 shrink-0 snap-start rounded-xl border border-border bg-surface p-3 cursor-pointer active:scale-[0.98] transition-transform"
@@ -88,6 +101,7 @@ function CourseCard({ course, onShare, onDelete, onEditName, onOpenOutline }: Co
           <CourseMenu
             course={course}
             onShare={onShare}
+            onPublish={onPublish}
             onDelete={onDelete}
             onEditName={onEditName}
           />
@@ -96,10 +110,13 @@ function CourseCard({ course, onShare, onDelete, onEditName, onOpenOutline }: Co
       <span className="mt-0.5 block text-xs text-text-tertiary">by {course.creator}</span>
 
       {/* Status + lessons */}
-      <div className="mt-2.5 flex items-center gap-2">
+      <div className="mt-2.5 flex flex-wrap items-center gap-2">
         <Badge variant={statusBadgeVariant(course.status)}>
           {course.status}
         </Badge>
+        {!course.isPublished && (
+          <Badge variant="warning">Draft</Badge>
+        )}
         <span className="text-xs text-text-secondary">
           {course.doneLessons}/{course.totalLessons}
         </span>
@@ -161,11 +178,20 @@ function CourseCarousel({
 
 interface CoursesPageProps {
   onOpenPreview?: () => void
+  newCourse?: Course | null
+  onConsumedNewCourse?: () => void
 }
 
-export function CoursesPage({ onOpenPreview }: CoursesPageProps) {
+export function CoursesPage({ onOpenPreview, newCourse, onConsumedNewCourse }: CoursesPageProps) {
   const [courses, setCourses] = useState<Course[]>(mockCourses)
   const [outlineCourse, setOutlineCourse] = useState<Course | null>(null)
+
+  useEffect(() => {
+    if (!newCourse) return
+    setCourses((prev) => [newCourse, ...prev])
+    showToast("Course created!", "success")
+    onConsumedNewCourse?.()
+  }, [newCourse, onConsumedNewCourse])
 
   async function handleShare(course: Course) {
     const shareData = generateShareLink(course)
@@ -200,11 +226,28 @@ export function CoursesPage({ onOpenPreview }: CoursesPageProps) {
     }
   }
 
+  function handlePublish(id: string) {
+    const course = courses.find((c) => c.id === id)
+    if (!course || course.isPublished) return
+    setCourses((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, isPublished: true } : c))
+    )
+    registerPublishedCourse({
+      id: course.id,
+      name: course.name,
+      creator: course.creator,
+      category: "For You",
+      isPublishedByUser: true,
+    })
+    showToast("Course published!", "success")
+  }
+
   const inProgress = courses.filter((c) => c.status === "In Progress")
   const notStarted = courses.filter((c) => c.status === "Not Started")
 
   const cardProps = {
     onShare: handleShare,
+    onPublish: handlePublish,
     onDelete: handleDelete,
     onEditName: handleEditName,
     onOpenPreview,

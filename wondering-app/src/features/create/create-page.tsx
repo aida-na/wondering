@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { mockCatalogCourses } from "@/features/courses/mock-data"
-import type { CatalogCourse } from "@/features/courses/types"
+import type { CatalogCourse, Course } from "@/features/courses/types"
 import { PersonalizationChat } from "./personalization-chat"
 import { ChatExploreView } from "./chat-explore-view"
 import { UploadSourceView } from "./upload-source-view"
@@ -12,7 +12,7 @@ import type { ChatMessage, CreateFlowStep, CreationMethod } from "./types"
 
 interface CreatePageProps {
   onBrowseCatalog: () => void
-  onComplete: () => void
+  onComplete: (course: Course) => void
   catalogCourse?: CatalogCourse | null
 }
 
@@ -114,8 +114,8 @@ export function CreatePage({
         sourceFile={sourceFile}
         catalogCourseId={catalogCourseId}
         onBack={() => setStep("landing")}
-        onComplete={onComplete}
-        onSkip={onComplete}
+        onComplete={(course) => onComplete(course)}
+        onSkip={(course) => onComplete(course)}
       />
     )
   }
@@ -153,14 +153,14 @@ export function CreatePage({
               }}
               placeholder="e.g., I want to learn about cognitive biases in decision making..."
               rows={2}
-              className="w-full resize-none rounded-xl border border-border bg-surface py-3 pl-4 pr-12 text-sm text-text-primary placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
+              className="w-full resize-none rounded-xl border border-border bg-surface py-3 pl-4 pr-14 text-sm text-text-primary placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
             />
             <Button
               type="submit"
               variant="primary"
               size="icon-sm"
               disabled={!topic.trim()}
-              className="absolute bottom-2.5 right-2.5"
+              className="absolute bottom-3.5 right-3"
             >
               <Send className="size-4" />
             </Button>

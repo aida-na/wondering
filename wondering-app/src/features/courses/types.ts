@@ -10,6 +10,7 @@ export interface Course {
   createdAt: string // ISO date
   isShared: boolean
   shareCount: number
+  isPublished: boolean
 }
 
 export interface Lesson {

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { ArrowLeft, Send, Loader2, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import type { Course } from "@/features/courses/types"
 import { startCourseCreation, submitPersonalization } from "./create-service"
 import type {
   CreationMethod,
@@ -21,8 +22,8 @@ interface PersonalizationChatProps {
   topic: string
   method: CreationMethod
   onBack: () => void
-  onComplete: () => void
-  onSkip: () => void
+  onComplete: (course: Course) => void
+  onSkip: (course: Course) => void
   sourceUrl?: string
   sourceFile?: string
   catalogCourseId?: string
@@ -141,8 +142,8 @@ export function PersonalizationChat({
         content: "Creating your personalized course...",
       },
     ])
-    await submitPersonalization(params, finalAnswers)
-    onComplete()
+    const course = await submitPersonalization(params, finalAnswers)
+    onComplete(course)
   }
 
   const handleSkip = async () => {
@@ -155,8 +156,8 @@ export function PersonalizationChat({
         content: "No problem! Creating your course with default settings...",
       },
     ])
-    await submitPersonalization(params, [])
-    onSkip()
+    const course = await submitPersonalization(params, [])
+    onSkip(course)
   }
 
   const handleCustomSubmit = (e: React.FormEvent) => {

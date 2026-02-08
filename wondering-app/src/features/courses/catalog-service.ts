@@ -1,6 +1,12 @@
 import type { CatalogCourse, CatalogFetchParams, CatalogFetchResult } from "./types"
 import { mockCatalogCourses, mockFriendCourses, mockPublishedCourses } from "./mock-data"
 
+let userPublishedCourses: CatalogCourse[] = [...mockPublishedCourses]
+
+export function registerPublishedCourse(course: CatalogCourse): void {
+  userPublishedCourses.push(course)
+}
+
 /**
  * Fetch catalog courses with tab-based filtering, category, and search.
  *
@@ -55,7 +61,7 @@ function getBaseDataset(tab: CatalogFetchParams["tab"]): CatalogCourse[] {
     case "my-friends":
       return [...mockFriendCourses]
     case "my-published":
-      return [...mockPublishedCourses]
+      return [...userPublishedCourses]
   }
 }
 

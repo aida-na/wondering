@@ -1,3 +1,4 @@
+import type { Course } from "@/features/courses/types"
 import type {
   CreateCourseParams,
   PersonalizationAnswer,
@@ -63,15 +64,27 @@ export async function startCourseCreation(
  * ```
  * POST /api/courses/create/finalize
  * Body: { params: CreateCourseParams, answers: PersonalizationAnswer[] }
- * Response: { courseId: string }
+ * Response: Course
  * ```
  */
 export async function submitPersonalization(
-  _params: CreateCourseParams,
+  params: CreateCourseParams,
   _answers: PersonalizationAnswer[]
-): Promise<{ courseId: string }> {
+): Promise<Course> {
   await new Promise((r) => setTimeout(r, 1500))
-  return { courseId: `new-${Date.now()}` }
+  const id = `new-${Date.now()}`
+  return {
+    id,
+    name: params.topic ?? "Untitled course",
+    creator: "You",
+    status: "Not Started",
+    doneLessons: 0,
+    totalLessons: 12,
+    createdAt: new Date().toISOString().slice(0, 10),
+    isShared: false,
+    shareCount: 0,
+    isPublished: false,
+  }
 }
 
 /**

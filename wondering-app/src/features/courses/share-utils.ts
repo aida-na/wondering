@@ -73,5 +73,6 @@ export function acceptSharedCourse(
     createdAt: new Date().toISOString().split("T")[0],
     isShared: true,
     shareCount: 0,
+    isPublished: false,
   }
 }

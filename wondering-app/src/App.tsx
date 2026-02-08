@@ -7,7 +7,7 @@ import { CoursePreviewPage } from "@/features/courses/course-preview-page"
 import { CourseCatalogPage } from "@/features/courses/course-catalog-page"
 import { CreatePage } from "@/features/create/create-page"
 import { ToastContainer } from "@/components/ui/toast"
-import type { CatalogCourse } from "@/features/courses/types"
+import type { CatalogCourse, Course } from "@/features/courses/types"
 
 type Page = "home" | "create" | "courses" | "profile" | "shared-course" | "course-catalog" | "course-preview"
 
@@ -15,6 +15,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState<Page>("courses")
   const [catalogReturnTo, setCatalogReturnTo] = useState<"courses" | "create" | null>(null)
   const [catalogCourseForCreate, setCatalogCourseForCreate] = useState<CatalogCourse | null>(null)
+  const [newCourseForList, setNewCourseForList] = useState<Course | null>(null)
 
   const handleBrowseCatalog = () => {
     setCatalogReturnTo("create")
@@ -40,9 +41,14 @@ function App() {
     }
   }
 
-  const handleCreateComplete = () => {
+  const handleCreateComplete = (course: Course) => {
     setCatalogCourseForCreate(null)
+    setNewCourseForList(course)
     setCurrentPage("courses")
+  }
+
+  const handleConsumedNewCourse = () => {
+    setNewCourseForList(null)
   }
 
   return (
@@ -60,7 +66,13 @@ function App() {
             onNavigate={(page) => setCurrentPage(page as Page)}
           />
           <main className="flex-1 overflow-auto">
-            {currentPage === "courses" && <CoursesPage onOpenPreview={() => { setCatalogReturnTo("courses"); setCurrentPage("course-catalog") }} />}
+            {currentPage === "courses" && (
+              <CoursesPage
+                onOpenPreview={() => { setCatalogReturnTo("courses"); setCurrentPage("course-catalog") }}
+                newCourse={newCourseForList}
+                onConsumedNewCourse={handleConsumedNewCourse}
+              />
+            )}
             {currentPage === "course-catalog" && (
               <CourseCatalogPage
                 onClose={handleCatalogClose}
