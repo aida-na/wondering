@@ -170,8 +170,7 @@ function CourseCarousel({
     <div className="mb-6">
       <h2 className="mb-3 text-base font-bold text-text-primary">{title}</h2>
       <div className="-mr-4 md:-mr-6">
-        <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 pl-1 no-scrollbar md:pl-2">
-          <div className="min-w-3 shrink-0 md:min-w-6" />
+        <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 no-scrollbar">
           {courses.map((course) => (
             <CourseCard key={course.id} course={course} {...menuProps} />
           ))}
