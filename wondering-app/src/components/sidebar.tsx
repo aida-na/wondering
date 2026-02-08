@@ -13,12 +13,23 @@ const navItems = [
   { id: "profile", label: "Profile", icon: UserCircle },
 ]
 
+const pageTitles: Record<string, string> = {
+  home: "Home",
+  create: "Create",
+  courses: "Courses",
+  profile: "Profile",
+  "course-catalog": "Catalog",
+  "course-preview": "Course",
+}
+
 export function Sidebar({ currentPage, onNavigate }: SidebarProps) {
+  const title = pageTitles[currentPage] ?? "Wondering"
+
   return (
     <aside className="hidden md:flex w-52 shrink-0 flex-col border-r border-border bg-surface">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-4">
-        <span className="logo-font text-lg text-text-primary">Course</span>
+        <span className="logo-font text-lg text-text-primary">{title}</span>
         <button className="rounded-lg p-1 text-text-tertiary hover:bg-surface-hover hover:text-text-primary">
           <ChevronLeft className="size-5" />
         </button>

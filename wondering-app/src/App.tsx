@@ -7,6 +7,7 @@ import { CoursePreviewPage } from "@/features/courses/course-preview-page"
 import { CourseCatalogPage } from "@/features/courses/course-catalog-page"
 import { CreatePage } from "@/features/create/create-page"
 import { ToastContainer } from "@/components/ui/toast"
+import { LandingPage } from "@/components/landing-page"
 import type { CatalogCourse, Course } from "@/features/courses/types"
 
 type Page = "home" | "create" | "courses" | "profile" | "shared-course" | "course-catalog" | "course-preview"
@@ -90,9 +91,7 @@ function App() {
               />
             )}
             {currentPage === "home" && (
-              <div className="flex h-full items-center justify-center">
-                <p className="text-text-tertiary">Home — select Courses to see the sharing feature</p>
-              </div>
+              <LandingPage onStartLearning={() => setCurrentPage("create")} />
             )}
             {currentPage === "profile" && (
               <div className="flex h-full items-center justify-center">
