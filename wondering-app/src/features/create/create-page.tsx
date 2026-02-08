@@ -42,6 +42,7 @@ export function CreatePage({
   const [sourceUrl, setSourceUrl] = useState<string | undefined>()
   const [sourceFile, setSourceFile] = useState<string | undefined>()
   const [catalogCourseId, setCatalogCourseId] = useState<string | undefined>()
+  const [catalogCreator, setCatalogCreator] = useState<string | undefined>()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   // Auto-transition when returning from catalog with a selected course
@@ -50,6 +51,7 @@ export function CreatePage({
       setTopic(catalogCourse.name)
       setMethod("catalog")
       setCatalogCourseId(catalogCourse.id)
+      setCatalogCreator(catalogCourse.creator)
       setStep("personalizing")
     }
   }, [catalogCourse])
@@ -58,6 +60,7 @@ export function CreatePage({
     e.preventDefault()
     if (!topic.trim()) return
     setMethod("quick")
+    setCatalogCreator(undefined)
     setStep("personalizing")
   }
 
@@ -65,6 +68,7 @@ export function CreatePage({
     setTopic(course.name)
     setMethod("catalog")
     setCatalogCourseId(course.id)
+    setCatalogCreator(course.creator)
     setStep("personalizing")
   }
 
@@ -72,6 +76,7 @@ export function CreatePage({
     setMethod("chat")
     const firstUserMsg = history.find((m) => m.role === "user")
     setTopic(firstUserMsg?.content ?? "Explored topic")
+    setCatalogCreator(undefined)
     setStep("personalizing")
   }
 
@@ -83,6 +88,7 @@ export function CreatePage({
     setSourceFile(source.fileName)
     setMethod("upload")
     setTopic(source.fileName ?? source.url ?? "From source")
+    setCatalogCreator(undefined)
     setStep("personalizing")
   }
 
@@ -113,6 +119,7 @@ export function CreatePage({
         sourceUrl={sourceUrl}
         sourceFile={sourceFile}
         catalogCourseId={catalogCourseId}
+        creator={catalogCreator}
         onBack={() => setStep("landing")}
         onComplete={(course) => onComplete(course)}
         onSkip={(course) => onComplete(course)}

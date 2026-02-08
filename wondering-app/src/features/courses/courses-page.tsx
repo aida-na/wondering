@@ -13,7 +13,7 @@ import { MoreVertical, Pencil, Trash2, Share2, Users, Plus, Globe, Check } from 
 import type { Course, CourseStatus } from "./types"
 import { mockCourses, recommendedCourses } from "./mock-data"
 import { generateShareLink, shareCourse } from "./share-utils"
-import { registerPublishedCourse } from "./catalog-service"
+import { registerPublishedCourse, unregisterPublishedCourse } from "./catalog-service"
 import { CourseOutlineModal } from "./course-outline-modal"
 
 function statusBadgeVariant(status: CourseStatus) {
@@ -34,13 +34,14 @@ interface CourseMenuProps {
   course: Course
   onShare: (course: Course) => void
   onPublish: (id: string) => void
+  onUnpublish: (id: string) => void
   onDelete: (id: string) => void
   onEditName: (id: string) => void
   onOpenPreview?: () => void
   onOpenOutline?: (course: Course) => void
 }
 
-function CourseMenu({ course, onShare, onPublish, onDelete, onEditName }: CourseMenuProps) {
+function CourseMenu({ course, onShare, onPublish, onUnpublish, onDelete, onEditName }: CourseMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -69,10 +70,16 @@ function CourseMenu({ course, onShare, onPublish, onDelete, onEditName }: Course
             Publish
           </DropdownMenuItem>
         ) : (
-          <DropdownMenuItem disabled className="opacity-70 cursor-default">
-            <Check className="size-4 text-text-tertiary" />
-            Published ✓
-          </DropdownMenuItem>
+          <>
+            <DropdownMenuItem disabled className="opacity-70 cursor-default">
+              <Check className="size-4 text-text-tertiary" />
+              Published ✓
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => onUnpublish(course.id)}>
+              <Globe className="size-4 text-text-tertiary" />
+              Unpublish
+            </DropdownMenuItem>
+          </>
         )}
         <DropdownMenuSeparator />
         <DropdownMenuItem destructive onSelect={() => onDelete(course.id)}>
@@ -86,7 +93,7 @@ function CourseMenu({ course, onShare, onPublish, onDelete, onEditName }: Course
 
 /* ─── Mobile: Course Card ─── */
 
-function CourseCard({ course, onShare, onPublish, onDelete, onEditName, onOpenOutline }: CourseMenuProps) {
+function CourseCard({ course, onShare, onPublish, onUnpublish, onDelete, onEditName, onOpenOutline }: CourseMenuProps) {
   return (
     <div
       className="w-56 shrink-0 snap-start rounded-xl border border-border bg-surface p-3 cursor-pointer active:scale-[0.98] transition-transform"
@@ -102,6 +109,7 @@ function CourseCard({ course, onShare, onPublish, onDelete, onEditName, onOpenOu
             course={course}
             onShare={onShare}
             onPublish={onPublish}
+            onUnpublish={onUnpublish}
             onDelete={onDelete}
             onEditName={onEditName}
           />
@@ -242,12 +250,23 @@ export function CoursesPage({ onOpenPreview, newCourse, onConsumedNewCourse }: C
     showToast("Course published!", "success")
   }
 
+  function handleUnpublish(id: string) {
+    const course = courses.find((c) => c.id === id)
+    if (!course || !course.isPublished) return
+    setCourses((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, isPublished: false } : c))
+    )
+    unregisterPublishedCourse(id)
+    showToast("Course unpublished", "info")
+  }
+
   const inProgress = courses.filter((c) => c.status === "In Progress")
   const notStarted = courses.filter((c) => c.status === "Not Started")
 
   const cardProps = {
     onShare: handleShare,
     onPublish: handlePublish,
+    onUnpublish: handleUnpublish,
     onDelete: handleDelete,
     onEditName: handleEditName,
     onOpenPreview,

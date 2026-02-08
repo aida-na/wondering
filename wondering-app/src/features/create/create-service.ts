@@ -76,7 +76,7 @@ export async function submitPersonalization(
   return {
     id,
     name: params.topic ?? "Untitled course",
-    creator: "You",
+    creator: params.creator ?? "You",
     status: "Not Started",
     doneLessons: 0,
     totalLessons: 12,

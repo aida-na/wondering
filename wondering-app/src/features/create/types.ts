@@ -31,4 +31,6 @@ export interface CreateCourseParams {
   sourceUrl?: string
   sourceFile?: string
   catalogCourseId?: string
+  /** When adding from catalog, the original course author to preserve */
+  creator?: string
 }

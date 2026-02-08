@@ -27,6 +27,8 @@ interface PersonalizationChatProps {
   sourceUrl?: string
   sourceFile?: string
   catalogCourseId?: string
+  /** When adding from catalog, the original course author to preserve */
+  creator?: string
 }
 
 export function PersonalizationChat({
@@ -38,6 +40,7 @@ export function PersonalizationChat({
   sourceUrl,
   sourceFile,
   catalogCourseId,
+  creator,
 }: PersonalizationChatProps) {
   const [bubbles, setBubbles] = useState<ChatBubble[]>([])
   const [questions, setQuestions] = useState<PersonalizationQuestion[]>([])
@@ -54,6 +57,7 @@ export function PersonalizationChat({
     sourceUrl,
     sourceFile,
     catalogCourseId,
+    creator,
   }
 
   // Scroll to bottom when bubbles change

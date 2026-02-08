@@ -7,6 +7,10 @@ export function registerPublishedCourse(course: CatalogCourse): void {
   userPublishedCourses.push(course)
 }
 
+export function unregisterPublishedCourse(courseId: string): void {
+  userPublishedCourses = userPublishedCourses.filter((c) => c.id !== courseId)
+}
+
 /**
  * Fetch catalog courses with tab-based filtering, category, and search.
  *
