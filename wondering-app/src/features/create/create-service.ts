@@ -84,6 +84,7 @@ export async function submitPersonalization(
     isShared: false,
     shareCount: 0,
     isPublished: false,
+    createdByUser: true,
   }
 }
 

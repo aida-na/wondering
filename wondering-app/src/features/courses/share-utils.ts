@@ -74,5 +74,6 @@ export function acceptSharedCourse(
     isShared: true,
     shareCount: 0,
     isPublished: false,
+    createdByUser: false,
   }
 }

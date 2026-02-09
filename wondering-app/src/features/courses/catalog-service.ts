@@ -46,12 +46,12 @@ export async function fetchCatalogCourses(
     const tabIds = new Set(tabDataset.map((c) => c.id))
     courses = searchResults.filter((c) => tabIds.has(c.id))
 
-    if (params.category && params.category !== "For You" && params.category !== "All") {
+    if (params.category && params.category !== "All") {
       courses = courses.filter((c) => c.category === params.category)
     }
   } else {
     courses = [...tabDataset]
-    if (params.category && params.category !== "For You" && params.category !== "All") {
+    if (params.category && params.category !== "All") {
       courses = courses.filter((c) => c.category === params.category)
     }
   }
@@ -103,5 +103,5 @@ function deriveCategories(courses: CatalogCourse[]): string[] {
   for (const c of courses) {
     seen.add(c.category)
   }
-  return ["For You", ...Array.from(seen).sort()]
+  return ["All", ...Array.from(seen).sort().filter((c) => c !== "For You")]
 }

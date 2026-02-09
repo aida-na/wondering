@@ -128,7 +128,7 @@ export function CourseCatalogPage({
 }: CourseCatalogPageProps) {
   const [activeTab, setActiveTab] = useState<CatalogTab>("recommended")
   const [search, setSearch] = useState("")
-  const [activeCategory, setActiveCategory] = useState("For You")
+  const [activeCategory, setActiveCategory] = useState("All")
   const [courses, setCourses] = useState<CatalogCourse[]>([])
   const [categories, setCategories] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
@@ -154,7 +154,7 @@ export function CourseCatalogPage({
   // Reset category when switching tabs (keep search so filters apply on top of it)
   const handleTabChange = (tab: CatalogTab) => {
     setActiveTab(tab)
-    setActiveCategory("For You")
+    setActiveCategory("All")
   }
 
   // Group by category

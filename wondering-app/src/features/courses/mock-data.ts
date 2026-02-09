@@ -12,6 +12,7 @@ export const mockCourses: Course[] = [
     isShared: true,
     shareCount: 12,
     isPublished: true,
+    createdByUser: false,
   },
   {
     id: "2",
@@ -24,6 +25,7 @@ export const mockCourses: Course[] = [
     isShared: false,
     shareCount: 0,
     isPublished: true,
+    createdByUser: false,
   },
   {
     id: "3",
@@ -36,6 +38,7 @@ export const mockCourses: Course[] = [
     isShared: true,
     shareCount: 5,
     isPublished: true,
+    createdByUser: false,
   },
   {
     id: "4",
@@ -48,6 +51,7 @@ export const mockCourses: Course[] = [
     isShared: false,
     shareCount: 0,
     isPublished: true,
+    createdByUser: false,
   },
   {
     id: "5",
@@ -60,6 +64,7 @@ export const mockCourses: Course[] = [
     isShared: true,
     shareCount: 34,
     isPublished: true,
+    createdByUser: false,
   },
   {
     id: "6",
@@ -72,6 +77,7 @@ export const mockCourses: Course[] = [
     isShared: false,
     shareCount: 0,
     isPublished: true,
+    createdByUser: false,
   },
 ]
 
@@ -130,6 +136,7 @@ function courseFromCatalog(c: CatalogCourse): Course {
     isShared: false,
     shareCount: 0,
     isPublished: true,
+    createdByUser: false,
   }
 }
 

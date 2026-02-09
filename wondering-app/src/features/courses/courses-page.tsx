@@ -64,23 +64,24 @@ function CourseMenu({ course, onShare, onPublish, onUnpublish, onDelete, onEditN
             </span>
           )}
         </DropdownMenuItem>
-        {!course.isPublished ? (
-          <DropdownMenuItem onSelect={() => onPublish(course.id)}>
-            <Globe className="size-4 text-text-tertiary" />
-            Publish
-          </DropdownMenuItem>
-        ) : (
-          <>
-            <DropdownMenuItem disabled className="opacity-70 cursor-default">
-              <Check className="size-4 text-text-tertiary" />
-              Published ✓
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => onUnpublish(course.id)}>
+        {course.createdByUser &&
+          (!course.isPublished ? (
+            <DropdownMenuItem onSelect={() => onPublish(course.id)}>
               <Globe className="size-4 text-text-tertiary" />
-              Unpublish
+              Publish
             </DropdownMenuItem>
-          </>
-        )}
+          ) : (
+            <>
+              <DropdownMenuItem disabled className="opacity-70 cursor-default">
+                <Check className="size-4 text-text-tertiary" />
+                Published ✓
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => onUnpublish(course.id)}>
+                <Globe className="size-4 text-text-tertiary" />
+                Unpublish
+              </DropdownMenuItem>
+            </>
+          ))}
         <DropdownMenuSeparator />
         <DropdownMenuItem destructive onSelect={() => onDelete(course.id)}>
           <Trash2 className="size-4" />
@@ -122,7 +123,7 @@ function CourseCard({ course, onShare, onPublish, onUnpublish, onDelete, onEditN
         <Badge variant={statusBadgeVariant(course.status)}>
           {course.status}
         </Badge>
-        {!course.isPublished && (
+        {course.createdByUser && !course.isPublished && (
           <Badge variant="warning">Draft</Badge>
         )}
         <span className="text-xs text-text-secondary">
@@ -242,7 +243,7 @@ export function CoursesPage({
 
   function handlePublish(id: string) {
     const course = courses.find((c) => c.id === id)
-    if (!course || course.isPublished) return
+    if (!course || course.isPublished || !course.createdByUser) return
     setCourses((prev) =>
       prev.map((c) => (c.id === id ? { ...c, isPublished: true } : c))
     )
@@ -258,7 +259,7 @@ export function CoursesPage({
 
   function handleUnpublish(id: string) {
     const course = courses.find((c) => c.id === id)
-    if (!course || !course.isPublished) return
+    if (!course || !course.isPublished || !course.createdByUser) return
     setCourses((prev) =>
       prev.map((c) => (c.id === id ? { ...c, isPublished: false } : c))
     )

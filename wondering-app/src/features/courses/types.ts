@@ -11,6 +11,8 @@ export interface Course {
   isShared: boolean
   shareCount: number
   isPublished: boolean
+  /** True if the user created this course (via Create tab). Only these can be published. */
+  createdByUser?: boolean
 }
 
 export interface Lesson {
