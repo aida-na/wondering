@@ -134,22 +134,36 @@ export function CourseCatalogPage({
   const [loading, setLoading] = useState(true)
   const fetchId = useRef(0)
 
-  // Fetch courses when tab, category, or search changes
+  // My Published = user's courses that are created by them and published (so they're always in Courses too)
+  const publishedFromUserCourses = useMemo(
+    () =>
+      userCourses
+        .filter((c) => c.createdByUser && c.isPublished)
+        .map((c) => ({
+          id: c.id,
+          name: c.name,
+          creator: c.creator,
+          category: "All",
+          isPublishedByUser: true,
+        })),
+    [userCourses]
+  )
+
+  // Fetch courses when tab, category, search, or user courses change
   useEffect(() => {
     const id = ++fetchId.current
     setLoading(true)
 
-    fetchCatalogCourses({
-      tab: activeTab,
-      category: activeCategory,
-      search,
-    }).then((result) => {
+    fetchCatalogCourses(
+      { tab: activeTab, category: activeCategory, search },
+      { publishedCourses: publishedFromUserCourses }
+    ).then((result) => {
       if (id !== fetchId.current) return // stale request
       setCourses(result.courses)
       setCategories(result.categories)
       setLoading(false)
     })
-  }, [activeTab, activeCategory, search])
+  }, [activeTab, activeCategory, search, publishedFromUserCourses])
 
   // Reset category when switching tabs (keep search so filters apply on top of it)
   const handleTabChange = (tab: CatalogTab) => {

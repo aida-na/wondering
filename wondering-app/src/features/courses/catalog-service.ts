@@ -11,6 +11,11 @@ export function unregisterPublishedCourse(courseId: string): void {
   userPublishedCourses = userPublishedCourses.filter((c) => c.id !== courseId)
 }
 
+export interface FetchCatalogOptions {
+  /** When provided, "My Published" tab shows these (from user's Courses). Ensures my published ⊆ my courses. */
+  publishedCourses?: CatalogCourse[]
+}
+
 /**
  * Fetch catalog courses with tab-based filtering, category, and search.
  *
@@ -21,14 +26,16 @@ export function unregisterPublishedCourse(courseId: string): void {
  *
  * - When search is empty: tab → category → return
  * - When search is set: search across ALL tabs and genres, then apply tab filter, then category filter
+ * - When tab is "my-published" and options.publishedCourses is provided, that list is used (so My Published = courses from user's list)
  */
 export async function fetchCatalogCourses(
-  params: CatalogFetchParams
+  params: CatalogFetchParams,
+  options?: FetchCatalogOptions
 ): Promise<CatalogFetchResult> {
   // Simulate network latency
   await new Promise((resolve) => setTimeout(resolve, 300))
 
-  const tabDataset = getBaseDataset(params.tab)
+  const tabDataset = getBaseDataset(params.tab, options?.publishedCourses)
   const hasSearch = Boolean(params.search?.trim())
 
   let courses: CatalogCourse[]
@@ -40,7 +47,7 @@ export async function fetchCatalogCourses(
       c.creator.toLowerCase().includes(q) ||
       c.category.toLowerCase().includes(q)
 
-    const allSearchable = getAllSearchableCourses()
+    const allSearchable = getAllSearchableCourses(options?.publishedCourses)
     const searchResults = allSearchable.filter(searchMatches)
 
     const tabIds = new Set(tabDataset.map((c) => c.id))
@@ -61,7 +68,7 @@ export async function fetchCatalogCourses(
   return { courses, categories }
 }
 
-function getAllSearchableCourses(): CatalogCourse[] {
+function getAllSearchableCourses(publishedCourses?: CatalogCourse[]): CatalogCourse[] {
   const seen = new Set<string>()
   const result: CatalogCourse[] = []
   const tabs: CatalogFetchParams["tab"][] = [
@@ -72,7 +79,7 @@ function getAllSearchableCourses(): CatalogCourse[] {
     "my-published",
   ]
   for (const tab of tabs) {
-    for (const c of getBaseDataset(tab)) {
+    for (const c of getBaseDataset(tab, publishedCourses)) {
       if (seen.has(c.id)) continue
       seen.add(c.id)
       result.push(c)
@@ -81,7 +88,10 @@ function getAllSearchableCourses(): CatalogCourse[] {
   return result
 }
 
-function getBaseDataset(tab: CatalogFetchParams["tab"]): CatalogCourse[] {
+function getBaseDataset(
+  tab: CatalogFetchParams["tab"],
+  publishedCourses?: CatalogCourse[]
+): CatalogCourse[] {
   switch (tab) {
     case "recommended":
       return mockCatalogCourses.filter((c) =>
@@ -94,7 +104,7 @@ function getBaseDataset(tab: CatalogFetchParams["tab"]): CatalogCourse[] {
     case "my-friends":
       return [...mockFriendCourses]
     case "my-published":
-      return [...userPublishedCourses]
+      return publishedCourses != null ? [...publishedCourses] : [...userPublishedCourses]
   }
 }
 
