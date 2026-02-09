@@ -178,9 +178,9 @@ export function PersonalizationChat({
     answers.length === currentQuestionIndex
 
   return (
-    <div className="flex h-full flex-col pb-24 safe-area-bottom md:pb-0">
+    <div className="flex h-full flex-col">
       {/* Top bar */}
-      <div className="flex items-center justify-between border-b border-border px-4 py-3">
+      <div className="shrink-0 flex items-center justify-between border-b border-border px-4 py-3">
         <button
           onClick={onBack}
           className="flex items-center gap-1.5 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
@@ -198,10 +198,10 @@ export function PersonalizationChat({
         )}
       </div>
 
-      {/* Chat area */}
+      {/* Chat area — extra pb on mobile so content isn't hidden behind fixed form */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-auto p-4 space-y-3"
+        className="flex-1 min-h-0 overflow-auto p-4 pb-32 space-y-3 md:pb-4"
       >
         {bubbles.map((bubble) => (
           <div
@@ -258,13 +258,13 @@ export function PersonalizationChat({
         )}
       </div>
 
-      {/* Bottom input — container pb-24 keeps this above the fixed bottom nav on mobile */}
+      {/* Bottom input — fixed on mobile so it stays above nav and demo button; static on desktop */}
       {!isCreating && !isLoading && (
         <form
           onSubmit={handleCustomSubmit}
-          className="shrink-0 border-t border-border bg-surface p-4"
+          className="shrink-0 border-t border-border bg-surface p-4 safe-area-bottom fixed bottom-24 left-0 right-0 z-30 md:static md:bottom-auto md:left-auto md:right-auto"
         >
-          <div className="flex gap-2">
+          <div className="max-w-2xl mx-auto flex gap-2">
             <input
               type="text"
               value={customInput}
