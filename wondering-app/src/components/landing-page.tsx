@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button"
-import { Sparkles } from "lucide-react"
 
 interface LandingPageProps {
   onStartLearning: () => void
@@ -10,8 +9,17 @@ export function LandingPage({ onStartLearning }: LandingPageProps) {
     <div className="flex min-h-full flex-col overflow-auto">
       <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center px-4 py-12 md:py-16">
         <div className="text-center animate-hero-reveal">
-          <div className="mx-auto mb-6 flex size-14 items-center justify-center rounded-2xl bg-brand-bg">
-            <Sparkles className="size-7 text-brand" />
+          <div className="mx-auto mb-4 flex justify-center overflow-visible">
+            <video
+              src="/walking-character.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="h-24 w-auto object-contain md:h-32"
+              style={{ background: "transparent" }}
+              aria-hidden
+            />
           </div>
           <h1 className="young-serif-font text-3xl font-bold leading-tight text-text-primary md:text-4xl lg:text-5xl">
             learn. obsess. repeat.
