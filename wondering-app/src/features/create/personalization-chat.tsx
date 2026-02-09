@@ -178,7 +178,7 @@ export function PersonalizationChat({
     answers.length === currentQuestionIndex
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col pb-24 safe-area-bottom md:pb-0">
       {/* Top bar */}
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <button
@@ -258,11 +258,11 @@ export function PersonalizationChat({
         )}
       </div>
 
-      {/* Bottom input — extra padding on mobile so it sits above the bottom nav */}
+      {/* Bottom input — container pb-24 keeps this above the fixed bottom nav on mobile */}
       {!isCreating && !isLoading && (
         <form
           onSubmit={handleCustomSubmit}
-          className="border-t border-border p-4 pb-24 safe-area-bottom md:pb-4"
+          className="shrink-0 border-t border-border bg-surface p-4"
         >
           <div className="flex gap-2">
             <input

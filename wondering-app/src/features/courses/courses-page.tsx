@@ -65,7 +65,6 @@ function CourseMenu({ course, onShare, onPublish, onUnpublish, onDelete, onEditN
           )}
         </DropdownMenuItem>
         {course.createdByUser &&
-          (course.status === "In Progress" || course.status === "Completed") &&
           (!course.isPublished ? (
             <DropdownMenuItem onSelect={() => onPublish(course.id)}>
               <Globe className="size-4 text-text-tertiary" />
@@ -244,10 +243,7 @@ export function CoursesPage({
 
   function handlePublish(id: string) {
     const course = courses.find((c) => c.id === id)
-    const canPublish =
-      course?.createdByUser &&
-      (course.status === "In Progress" || course.status === "Completed")
-    if (!course || course.isPublished || !canPublish) return
+    if (!course || course.isPublished || !course.createdByUser) return
     setCourses((prev) =>
       prev.map((c) => (c.id === id ? { ...c, isPublished: true } : c))
     )
