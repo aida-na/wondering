@@ -97,42 +97,42 @@ function CourseMenu({ course, onShare, onPublish, onUnpublish, onDelete, onEditN
 function CourseCard({ course, onShare, onPublish, onUnpublish, onDelete, onEditName, onOpenOutline }: CourseMenuProps) {
   return (
     <div
-      className="w-56 shrink-0 snap-start rounded-xl border border-border bg-surface p-3 cursor-pointer active:scale-[0.98] transition-transform"
+      className="flex w-56 shrink-0 snap-start flex-col rounded-xl border border-border bg-surface p-3 cursor-pointer active:scale-[0.98] transition-transform min-h-[11rem]"
       onClick={() => onOpenOutline?.(course)}
     >
-      {/* Name + kebab */}
-      <div className="flex items-start justify-between gap-2">
-        <h3 className="text-sm font-medium leading-snug text-text-primary line-clamp-2">
-          {course.name}
-        </h3>
-        <div onClick={(e) => e.stopPropagation()}>
-          <CourseMenu
-            course={course}
-            onShare={onShare}
-            onPublish={onPublish}
-            onUnpublish={onUnpublish}
-            onDelete={onDelete}
-            onEditName={onEditName}
-          />
+      {/* Content — flex-1 so buttons stay at bottom when content height varies */}
+      <div className="min-h-0 flex-1">
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="text-sm font-medium leading-snug text-text-primary line-clamp-2">
+            {course.name}
+          </h3>
+          <div onClick={(e) => e.stopPropagation()}>
+            <CourseMenu
+              course={course}
+              onShare={onShare}
+              onPublish={onPublish}
+              onUnpublish={onUnpublish}
+              onDelete={onDelete}
+              onEditName={onEditName}
+            />
+          </div>
+        </div>
+        <span className="mt-0.5 block text-xs text-text-tertiary">by {course.creator}</span>
+        <div className="mt-2.5 flex flex-wrap items-center gap-2">
+          <Badge variant={statusBadgeVariant(course.status)}>
+            {course.status}
+          </Badge>
+          {course.createdByUser && !course.isPublished && (
+            <Badge variant="warning">Draft</Badge>
+          )}
+          <span className="text-xs text-text-secondary">
+            {course.doneLessons}/{course.totalLessons}
+          </span>
         </div>
       </div>
-      <span className="mt-0.5 block text-xs text-text-tertiary">by {course.creator}</span>
 
-      {/* Status + lessons */}
-      <div className="mt-2.5 flex flex-wrap items-center gap-2">
-        <Badge variant={statusBadgeVariant(course.status)}>
-          {course.status}
-        </Badge>
-        {course.createdByUser && !course.isPublished && (
-          <Badge variant="warning">Draft</Badge>
-        )}
-        <span className="text-xs text-text-secondary">
-          {course.doneLessons}/{course.totalLessons}
-        </span>
-      </div>
-
-      {/* Action buttons */}
-      <div className="mt-3 grid grid-cols-2 gap-2" onClick={(e) => e.stopPropagation()}>
+      {/* Action buttons — mt-auto aligns to bottom of card */}
+      <div className="mt-auto pt-3 grid grid-cols-2 gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
         <Button variant="tertiary" size="sm" uppercase={false} fullWidth>
           Saved
         </Button>
