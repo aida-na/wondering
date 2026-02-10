@@ -4,6 +4,25 @@ import type { Course, ShareLinkData } from "./types"
 import { generateShareLink, shareCourse } from "./share-utils"
 import { courseImage } from "./courses-page"
 
+type ShareTone = "made" | "together"
+type ShareChannel = "imessage" | "twitter" | "instagram" | "linkedin" | "copy" | "native"
+
+const CHANNEL_DEFAULT_TONE: Record<ShareChannel, ShareTone> = {
+  imessage: "together",
+  twitter: "made",
+  instagram: "made",
+  linkedin: "made",
+  copy: "made",
+  native: "together",
+}
+
+function getMessage(tone: ShareTone, courseName: string) {
+  if (tone === "made") {
+    return `I just made a course on ${courseName}`
+  }
+  return `Learning ${courseName} - want to do it together? We can keep each other on track`
+}
+
 interface ShareModalProps {
   course: Course
   onClose: () => void
@@ -12,12 +31,15 @@ interface ShareModalProps {
 
 export function ShareModal({ course, onClose, onShared }: ShareModalProps) {
   const [copied, setCopied] = useState(false)
+  const [tone, setTone] = useState<ShareTone>("made")
   const cardRef = useRef<HTMLDivElement>(null)
 
   const shareData: ShareLinkData = generateShareLink(course)
 
   // Estimate reading time: ~2.5 min per lesson
   const estimatedMin = Math.round(course.totalLessons * 2.5)
+
+  const message = getMessage(tone, course.name)
 
   // Lock body scroll
   useEffect(() => {
@@ -34,33 +56,51 @@ export function ShareModal({ course, onClose, onShared }: ShareModalProps) {
     return () => window.removeEventListener("keydown", onKey)
   }, [onClose])
 
-  const shareMessage = `i made this course on Wondering, join me so we stay motivated:)`
+  function shareVia(channel: ShareChannel) {
+    const activeTone = CHANNEL_DEFAULT_TONE[channel]
+    // Use the channel's default tone for the actual message sent
+    const text = getMessage(activeTone, course.name)
 
-  async function handleiMessage() {
-    const text = `${shareMessage}\n\n${course.name}\n${shareData.shareUrl}`
-    const smsUrl = `sms:&body=${encodeURIComponent(text)}`
-    window.open(smsUrl, "_blank")
-    onShared()
-  }
-
-  async function handleTwitter() {
-    const text = `${shareMessage}\n\n${course.name}`
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareData.shareUrl)}`
-    window.open(twitterUrl, "_blank")
-    onShared()
-  }
-
-  async function handleCopyLink() {
-    await navigator.clipboard.writeText(shareData.shareUrl)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
-  async function handleNativeShare() {
-    const result = await shareCourse(shareData)
-    if (result === "shared" || result === "copied") {
-      onShared()
+    switch (channel) {
+      case "imessage": {
+        const body = `${text}\n${shareData.shareUrl}`
+        window.open(`sms:&body=${encodeURIComponent(body)}`, "_blank")
+        break
+      }
+      case "twitter": {
+        const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareData.shareUrl)}`
+        window.open(tweetUrl, "_blank")
+        break
+      }
+      case "instagram": {
+        // Copy message to clipboard then open Instagram so user can paste in DM/Story
+        const body = `${text}\n${shareData.shareUrl}`
+        navigator.clipboard.writeText(body)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+        window.open("https://www.instagram.com/", "_blank")
+        break
+      }
+      case "linkedin": {
+        const linkedinUrl = `https://www.linkedin.com/feed/?shareActive=true&text=${encodeURIComponent(`${text}\n${shareData.shareUrl}`)}`
+        window.open(linkedinUrl, "_blank")
+        break
+      }
+      case "copy": {
+        const body = `${message}\n${shareData.shareUrl}`
+        navigator.clipboard.writeText(body)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+        return // don't call onShared for copy
+      }
+      case "native": {
+        shareCourse(shareData, text).then((result) => {
+          if (result === "shared" || result === "copied") onShared()
+        })
+        return
+      }
     }
+    onShared()
   }
 
   return (
@@ -120,48 +160,87 @@ export function ShareModal({ course, onClose, onShared }: ShareModalProps) {
             </div>
           </div>
 
-          {/* ─── Share actions ─── */}
-          <div className="px-8 pb-6 flex flex-col gap-2">
-            <p className="text-xs font-medium text-text-tertiary uppercase tracking-wider mb-1">
+          {/* ─── Tone toggle ─── */}
+          <div className="px-8 pb-4">
+            <div className="flex gap-1 rounded-xl bg-white/40 backdrop-blur-sm p-1">
+              <button
+                onClick={() => setTone("made")}
+                className={`flex-1 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
+                  tone === "made"
+                    ? "bg-white text-text-primary shadow-sm"
+                    : "text-text-secondary hover:text-text-primary"
+                }`}
+              >
+                Share what I made
+              </button>
+              <button
+                onClick={() => setTone("together")}
+                className={`flex-1 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
+                  tone === "together"
+                    ? "bg-white text-text-primary shadow-sm"
+                    : "text-text-secondary hover:text-text-primary"
+                }`}
+              >
+                Invite to learn together
+              </button>
+            </div>
+
+            {/* Message preview */}
+            <p className="mt-3 text-sm text-text-secondary italic leading-snug">
+              &ldquo;{message}&rdquo;
+            </p>
+          </div>
+
+          {/* ─── Share channels ─── */}
+          <div className="px-8 pb-6">
+            <p className="text-xs font-medium text-text-tertiary uppercase tracking-wider mb-3">
               Share via
             </p>
 
-            {/* iMessage */}
-            <button
-              onClick={handleiMessage}
-              className="flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium text-text-primary bg-white/60 backdrop-blur-sm hover:bg-white/80 transition-colors text-left"
-            >
-              <span className="text-base">💬</span>
-              iMessage
-            </button>
-
-            {/* Twitter */}
-            <button
-              onClick={handleTwitter}
-              className="flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium text-text-primary bg-white/60 backdrop-blur-sm hover:bg-white/80 transition-colors text-left"
-            >
-              <span className="text-base">𝕏</span>
-              Twitter
-            </button>
-
-            {/* Copy link */}
-            <button
-              onClick={handleCopyLink}
-              className="flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium text-text-primary bg-white/60 backdrop-blur-sm hover:bg-white/80 transition-colors text-left"
-            >
-              <span className="text-base">🔗</span>
-              {copied ? "Copied!" : "Copy link"}
-            </button>
-
-            {/* Native share (mobile) */}
-            {"share" in navigator && (
+            <div className="flex items-center justify-center gap-4">
               <button
-                onClick={handleNativeShare}
-                className="flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium text-text-primary bg-white/60 backdrop-blur-sm hover:bg-white/80 transition-colors text-left"
+                onClick={() => { setTone(CHANNEL_DEFAULT_TONE.imessage); shareVia("imessage") }}
+                className="flex size-12 items-center justify-center rounded-full bg-white/60 backdrop-blur-sm hover:bg-white/80 transition-colors"
+                title="iMessage"
               >
-                <span className="text-base">📤</span>
-                More options...
+                <img src="/Transparent iMessage Icon.png" alt="iMessage" className="size-7 object-contain" />
               </button>
+
+              <button
+                onClick={() => { setTone(CHANNEL_DEFAULT_TONE.twitter); shareVia("twitter") }}
+                className="flex size-12 items-center justify-center rounded-full bg-white/60 backdrop-blur-sm hover:bg-white/80 transition-colors"
+                title="Twitter"
+              >
+                <img src="/Twitter Logo PNG.png" alt="Twitter" className="size-7 object-contain" />
+              </button>
+
+              <button
+                onClick={() => { setTone(CHANNEL_DEFAULT_TONE.instagram); shareVia("instagram") }}
+                className="flex size-12 items-center justify-center rounded-full bg-white/60 backdrop-blur-sm hover:bg-white/80 transition-colors"
+                title="Instagram"
+              >
+                <img src="/Instagram Icon Transparent.png" alt="Instagram" className="size-7 object-contain" />
+              </button>
+
+              <button
+                onClick={() => { setTone(CHANNEL_DEFAULT_TONE.linkedin); shareVia("linkedin") }}
+                className="flex size-12 items-center justify-center rounded-full bg-white/60 backdrop-blur-sm hover:bg-white/80 transition-colors"
+                title="LinkedIn"
+              >
+                <img src="/LinkedIn Icon Thumbnail.png" alt="LinkedIn" className="size-7 object-contain" />
+              </button>
+
+              <button
+                onClick={() => shareVia("copy")}
+                className="flex size-12 items-center justify-center rounded-full bg-white/60 backdrop-blur-sm hover:bg-white/80 transition-colors"
+                title={copied ? "Copied!" : "Copy link"}
+              >
+                <span className="text-lg">{copied ? "✓" : "🔗"}</span>
+              </button>
+            </div>
+
+            {copied && (
+              <p className="mt-2 text-center text-xs text-text-secondary">Copied to clipboard!</p>
             )}
           </div>
         </div>
