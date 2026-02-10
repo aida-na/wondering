@@ -21,12 +21,14 @@ const isMobile = () =>
   /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 
 export async function shareCourse(shareData: ShareLinkData): Promise<"shared" | "copied"> {
+  const shareMessage = `i made this course on Wondering, join me so we stay motivated:)`
+
   // Use native share sheet only on mobile (iOS/Android)
   if (isMobile() && navigator.share) {
     try {
       await navigator.share({
         title: shareData.courseName,
-        text: shareData.description,
+        text: `${shareMessage}\n\n${shareData.courseName}`,
         url: shareData.shareUrl,
       })
       return "shared"
@@ -37,8 +39,8 @@ export async function shareCourse(shareData: ShareLinkData): Promise<"shared" | 
     }
   }
 
-  // Web: always copy to clipboard — description + link
-  const clipboardText = `${shareData.description}\n${shareData.shareUrl}`
+  // Web: always copy to clipboard
+  const clipboardText = `${shareMessage}\n\n${shareData.courseName}\n${shareData.shareUrl}`
   await navigator.clipboard.writeText(clipboardText)
   return "copied"
 }

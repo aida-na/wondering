@@ -12,9 +12,23 @@ import { showToast } from "@/components/ui/toast"
 import { MoreVertical, Pencil, Trash2, Share2, Users, Plus, Globe, Check } from "lucide-react"
 import type { Course, CourseStatus } from "./types"
 import { recommendedCourses } from "./mock-data"
-import { generateShareLink, shareCourse } from "./share-utils"
+import { ShareModal } from "./share-modal"
 import { registerPublishedCourse, unregisterPublishedCourse } from "./catalog-service"
 import { CourseOutlineModal } from "./course-outline-modal"
+
+const COURSE_IMAGES = [
+  "/Gemini Generated Image (1).png",
+  "/Gemini Generated Image (2).png",
+  "/Gemini Generated Image (3).png",
+  "/Gemini Generated Image (4).png",
+]
+
+/** Pick a consistent image for a course based on its id */
+export function courseImage(id: string) {
+  let hash = 0
+  for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) | 0
+  return COURSE_IMAGES[Math.abs(hash) % COURSE_IMAGES.length]
+}
 
 function statusBadgeVariant(status: CourseStatus) {
   switch (status) {
@@ -200,6 +214,7 @@ export function CoursesPage({
   onConsumedNewCourse,
 }: CoursesPageProps) {
   const [outlineCourse, setOutlineCourse] = useState<Course | null>(null)
+  const [shareCourse, setShareCourse] = useState<Course | null>(null)
 
   useEffect(() => {
     if (!newCourse) return
@@ -208,21 +223,18 @@ export function CoursesPage({
     onConsumedNewCourse?.()
   }, [newCourse, onConsumedNewCourse, setCourses])
 
-  async function handleShare(course: Course) {
-    const shareData = generateShareLink(course)
-    const result = await shareCourse(shareData)
+  function handleShare(course: Course) {
+    setShareCourse(course)
+  }
 
-    if (result === "copied") {
-      showToast("Link copied to clipboard", "success")
-    } else {
-      showToast("Course shared!", "success")
-    }
-
+  function handleShared() {
+    if (!shareCourse) return
     setCourses((prev) =>
       prev.map((c) =>
-        c.id === course.id ? { ...c, isShared: true, shareCount: c.shareCount + 1 } : c
+        c.id === shareCourse.id ? { ...c, isShared: true, shareCount: c.shareCount + 1 } : c
       )
     )
+    showToast("Course shared!", "success")
   }
 
   function handleDelete(id: string) {
@@ -330,6 +342,15 @@ export function CoursesPage({
         <CourseOutlineModal
           course={outlineCourse}
           onClose={() => setOutlineCourse(null)}
+        />
+      )}
+
+      {/* Share modal */}
+      {shareCourse && (
+        <ShareModal
+          course={shareCourse}
+          onClose={() => setShareCourse(null)}
+          onShared={handleShared}
         />
       )}
     </div>

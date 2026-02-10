@@ -1,181 +1,283 @@
-@custom-variant dark (&:is(.dark *));
+wondering - design language
 
+> the smartest, most interesting person at the party who somehow makes you feel smarter too. not intimidating. not dumbed down. genuinely curious about everything.
+
+---
+
+## 00. brand overview
+
+**name:** wondering  
+**positioning:** AI learning mentor that curates what's worth your time  
+**personality:** curious, generous, witty, opinionated, warm. never condescending, never try-hard, never boring.  
+**visual vibe:** Notion meets Spotify meets a really good indie magazine. clean but with personality. not austere minimalism.  
+**promise:** we respect your time and your intelligence. every interaction should leave you a little bit smarter, a little more curious.
+
+---
+
+## 01. color palette
+
+not the typical edtech blue/green. something unexpected and ownable. a warm palette that feels like a good conversation over coffee.
+
+### primary colors
+
+| name        | hex       | hsl              | usage                                          |
+|-------------|-----------|------------------|-------------------------------------------------|
+| terracotta  | `#B84C2B` | `16, 62%, 45%`   | primary brand color. buttons, links, key accents. |
+| saffron     | `#D4A531` | `42, 70%, 55%`   | secondary accent. highlights, badges, warm emphasis. |
+
+### neutral colors
+
+| name        | hex       | hsl              | usage                                          |
+|-------------|-----------|------------------|-------------------------------------------------|
+| cream       | `#F2EDE4` | `36, 33%, 95%`   | backgrounds. the canvas everything lives on.    |
+| warm stone  | `#D6CFC3` | `30, 18%, 82%`   | borders, dividers, subtle separation.           |
+| ink         | `#231F1B` | `20, 10%, 12%`   | body text, headlines, primary foreground.       |
+
+### usage rules
+
+- **terracotta** is the hero. use it for primary actions, links, and the moments you want to draw attention.
+- **saffron** is the sidekick. badges, highlights, secondary CTAs. it adds warmth without competing.
+- **cream** is the canvas. everything sits on this. it's warm white, not cold white.
+- **warm stone** is for structure. borders, dividers, cards. quiet separation.
+- **ink** is for reading. body text, headlines. rich dark brown-black, not pure black.
+- never use pure white (`#FFFFFF`) or pure black (`#000000`). this brand lives in warm tones.
+- dark mode inverts the relationship: ink becomes the background, cream becomes the foreground, and terracotta/saffron get slightly lighter for readability.
+
+### dark mode values
+
+| name        | hex (approx) | hsl              |
+|-------------|--------------|------------------|
+| background  | `#181412`    | `20, 12%, 8%`    |
+| foreground  | `#EDE5DA`    | `36, 25%, 92%`   |
+| terracotta  | `#C8553A`    | `16, 62%, 50%`   |
+| saffron     | `#C99A30`    | `42, 65%, 52%`   |
+
+---
+
+## 02. typography
+
+quality without stuffiness. a geometric sans-serif for clarity, paired with a distinctive display serif that gives the brand character and warmth.
+
+### font families
+
+| role    | font     | style                   | source      |
+|---------|----------|-------------------------|-------------|
+| display | Fraunces | variable optical size serif | Google Fonts |
+| body    | DM Sans  | geometric sans-serif     | Google Fonts |
+
+### when to use which
+
+- **Fraunces (serif):** headlines, hero text, taglines, pull quotes, anything that needs to feel editorial or distinctive. always lowercase. always `font-light` or `font-normal`. tight tracking (`tracking-tight`).
+- **DM Sans (sans-serif):** body text, UI labels, navigation, captions, descriptions. clean and geometric. use `font-light` for larger sizes, `font-normal` for body.
+
+### type scale
+
+| level   | font     | tailwind class            | example                                          |
+|---------|----------|---------------------------|--------------------------------------------------|
+| display | Fraunces | `text-6xl md:text-7xl`    | "wondering"                                      |
+| h1      | Fraunces | `text-4xl md:text-5xl`    | "learn what matters"                              |
+| h2      | Fraunces | `text-2xl md:text-3xl`    | "feed your curiosity"                             |
+| h3      | DM Sans  | `text-xl md:text-2xl`     | "5 minutes smarter, every day"                   |
+| body    | DM Sans  | `text-base`               | "your AI learning mentor that curates what's worth your time." |
+| caption | DM Sans  | `text-sm`                 | "we read 200 articles so you don't have to."      |
+| label   | DM Sans  | `text-xs uppercase tracking-widest` | "BRAND GUIDELINES"                  |
+
+### typography rules
+
+- all headlines are **lowercase**. this is non-negotiable. it signals calm authority.
+- body text uses `leading-relaxed` (line-height ~1.625) for comfortable reading.
+- section numbers ("01", "02", etc.) use `text-xs uppercase tracking-widest text-muted-foreground`.
+- never use bold serif text. Fraunces is always `font-light`.
+- keep the type scale consistent. don't invent new sizes.
+
+---
+
+## 03. voice & tone
+
+the smartest, most interesting person at the party who somehow makes you feel smarter too. occasionally surprising. always respectful of your time.
+
+### the four principles
+
+#### 1. smart, not condescending
+
+explain complex things simply. never dumb down. never jargon up. find the sweet spot where clarity meets intelligence.
+
+| do this | not this |
+|---------|----------|
+| "here's why quantum computing matters for your morning coffee order." | "Quantum computing is a field of study that utilizes quantum-mechanical phenomena..." |
+
+#### 2. witty, not funny
+
+wit = intelligence + surprise. funny = trying to make you laugh. wit scales better across ages. think new yorker, not buzzfeed.
+
+| do this | not this |
+|---------|----------|
+| "your inbox called. it wants its life back." | "LOL email is SO annoying right?? am I right???" |
+
+#### 3. opinionated, not preachy
+
+have a point of view. curate ruthlessly. tell people what's worth their time. respect their attention.
+
+| do this | not this |
+|---------|----------|
+| "we read 200 articles about AI this week so you don't have to. here are the 3 that matter." | "There are many articles about AI. We think you should read all of them to stay informed." |
+
+#### 4. lowercase energy
+
+confidence is quiet. we don't need to shout. lowercase signals calm authority. it says "we know what we're doing."
+
+| do this | not this |
+|---------|----------|
+| "wondering: learn what matters" | "WONDERING: LEARN WHAT MATTERS!!!" |
+
+### additional tone notes
+
+- we are a curator, not an encyclopedia. every word earns its place.
+- contractions are good. "don't" not "do not." "it's" not "it is." we talk like humans.
+- avoid exclamation marks. one per page maximum. if you need one, something else isn't working.
+- never say "hey there!" or "hello friend!" or any variation. just start talking.
+- numbers are better than vague claims. "3 articles" not "a few articles." "5 minutes" not "a short read."
+
+---
+
+## 04. visual language
+
+distinctive without being a mascot. abstract shapes that evoke curiosity, connection, and the joy of learning. recognizable at any scale.
+
+### the four brand shapes
+
+| shape         | description                                    | meaning                           |
+|---------------|------------------------------------------------|-----------------------------------|
+| curiosity arc | a sweeping quarter-arc curve with a dot endpoint | the path of a curious mind. open-ended. going somewhere. |
+| wonder ring   | concentric circles, inner ring dashed           | layers of understanding. zooming in. depth. |
+| knowledge dot | scattered dots in varying sizes forming a loose grid | constellation of ideas. connection. pattern recognition. |
+| connect line  | diagonal line with dots at endpoints and midpoint | linking ideas. the a-ha moment. before and after. |
+
+### shape usage rules
+
+- shapes use only brand colors: terracotta for primary strokes, saffron for accents, ink for small details.
+- thin strokes only (`strokeWidth: 1.5-3`). never heavy or filled shapes.
+- think constellations, not flowcharts. organic, curious, never rigid or corporate.
+- shapes work as backgrounds, section accents, loading states, empty states. never as primary content.
+- at small sizes (favicons, app icons), the curiosity arc or wonder ring work best.
+- always use `aria-hidden="true"` on decorative shape SVGs.
+
+### spacing & layout
+
+- generous white space. let things breathe. when in doubt, add more padding.
+- section padding: `py-24 px-6 md:px-12 lg:px-20`
+- content max-width for text: `max-w-lg` (~32rem) for descriptions, full-width for headlines.
+- dividers: 1px solid using `border-border`. horizontal rules to separate sections.
+- cards: `rounded-sm bg-card p-6` with subtle background difference from page.
+- the voice & tone section uses an inverted color scheme (dark background, light text) to create visual rhythm. use this pattern sparingly for emphasis.
+
+---
+
+## 05. taglines
+
+each tagline serves a different purpose. choose based on context, not preference. they all say the same thing differently.
+
+| tagline                      | best for                              |
+|------------------------------|---------------------------------------|
+| "learn what matters"         | north star. hero headlines, app store, brand anchor. simple, opinionated, scalable. |
+| "5 minutes smarter, every day" | performance marketing, onboarding. clear value prop, habit-framing. |
+| "your AI learning mentor"    | product positioning, press, SEO. descriptive, differentiated. |
+| "feed your curiosity"        | brand campaigns, social. plays on brand name, universal appeal. |
+| "everything worth knowing"   | editorial, content hub, aspirational. ambitious, sets the tone for curation. |
+
+---
+
+## 06. implementation reference
+
+### CSS custom properties (design tokens)
+
+these are the exact values used in the live design system. use these for any implementation.
+
+```css
 :root {
-  --font-size: 16px;
-  --background: #ffffff;
-  --foreground: oklch(0.145 0 0);
-  --card: #ffffff;
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: #030213;
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.95 0.0058 264.53);
-  --secondary-foreground: #030213;
-  --muted: #ececf0;
-  --muted-foreground: #717182;
-  --accent: #e9ebef;
-  --accent-foreground: #030213;
-  --destructive: #d4183d;
-  --destructive-foreground: #ffffff;
-  --border: rgba(0, 0, 0, 0.1);
-  --input: transparent;
-  --input-background: #f3f3f5;
-  --switch-background: #cbced4;
-  --font-weight-medium: 500;
-  --font-weight-normal: 400;
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: #030213;
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --background: 36 33% 95%;     /* cream */
+  --foreground: 20 10% 12%;     /* ink */
+  --card: 36 30% 92%;
+  --primary: 16 62% 45%;        /* terracotta */
+  --primary-foreground: 36 33% 97%;
+  --secondary: 42 70% 55%;      /* saffron */
+  --secondary-foreground: 20 10% 12%;
+  --muted: 36 20% 88%;
+  --muted-foreground: 20 8% 46%;
+  --accent: 42 70% 55%;         /* saffron */
+  --accent-foreground: 20 10% 12%;
+  --border: 30 18% 82%;         /* warm stone */
+  --input: 30 18% 82%;
+  --ring: 16 62% 45%;           /* terracotta */
+  --radius: 0.375rem;
+}
+```
+
+### font setup (Next.js)
+
+```tsx
+import { DM_Sans, Fraunces } from 'next/font/google'
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  variable: '--font-dm-sans',
+})
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-fraunces',
+})
+
+// Apply to body:
+// className={`${dmSans.variable} ${fraunces.variable} font-sans antialiased`}
+```
+
+### tailwind config
+
+```js
+fontFamily: {
+  sans: ['var(--font-dm-sans)', 'system-ui', 'sans-serif'],
+  serif: ['var(--font-fraunces)', 'Georgia', 'serif'],
+}
+```
+
+### non-Next.js / general web
+
+if you're not using Next.js, load the fonts from Google Fonts:
+
+```html
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap" rel="stylesheet">
+```
+
+```css
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --font-weight-medium: 500;
-  --font-weight-normal: 400;
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+h1, h2, h3, .display {
+  font-family: 'Fraunces', Georgia, serif;
 }
+```
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-input-background: var(--input-background);
-  --color-switch-background: var(--switch-background);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-}
+---
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
+## 07. quick checklist
 
-  body {
-    @apply bg-background text-foreground;
-  }
+before shipping anything under the wondering brand, check:
 
-  /**
-  * Default typography styles for HTML elements (h1-h4, p, label, button, input).
-  * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
-  */
+- [ ] all headlines are lowercase
+- [ ] only using the 5 brand colors (terracotta, saffron, cream, warm stone, ink)
+- [ ] no pure white or pure black
+- [ ] Fraunces for display/headlines, DM Sans for body
+- [ ] Fraunces is always font-light, never bold
+- [ ] tone is smart and witty, never condescending or try-hard
+- [ ] no exclamation marks in headlines
+- [ ] generous whitespace throughout
+- [ ] numbers over vague claims
+- [ ] decorative elements use brand shapes, not stock illustrations
 
-  html {
-    font-size: var(--font-size);
-  }
+---
 
-  h1 {
-    font-size: var(--text-2xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
-  }
-
-  h2 {
-    font-size: var(--text-xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
-  }
-
-  h3 {
-    font-size: var(--text-lg);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
-  }
-
-  h4 {
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
-  }
-
-  label {
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
-  }
-
-  button {
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
-  }
-
-  input {
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-normal);
-    line-height: 1.5;
-  }
-}
+*wondering brand guidelines, 2026. learn what matters.*
