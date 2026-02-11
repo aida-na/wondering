@@ -4,11 +4,22 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { mockCatalogCourses } from "@/features/courses/mock-data"
-import type { CatalogCourse, Course } from "@/features/courses/types"
+import type { CatalogCourse, Course, LearningPath } from "@/features/courses/types"
+import { registerLearningPath } from "@/features/courses/mock-data"
 import { PersonalizationChat } from "./personalization-chat"
 import { ChatExploreView } from "./chat-explore-view"
 import { UploadSourceView } from "./upload-source-view"
-import type { ChatMessage, CreateFlowStep, CreationMethod } from "./types"
+import { CourseForm } from "./course-form"
+import { GenerationProgress } from "./generation-progress"
+import { CoursePreview } from "./course-preview"
+import { generateCourse, registerCourseContent } from "./create-service"
+import type {
+  ChatMessage,
+  CreateFlowStep,
+  CreationMethod,
+  CourseGenerationParams,
+  GeneratedCourse,
+} from "./types"
 
 interface CreatePageProps {
   onBrowseCatalog: () => void
@@ -45,6 +56,15 @@ export function CreatePage({
   const [catalogCreator, setCatalogCreator] = useState<string | undefined>()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+  // Quick-flow generation state
+  const [generationParams, setGenerationParams] =
+    useState<CourseGenerationParams | null>(null)
+  const [generatingCourseId, setGeneratingCourseId] = useState<string | null>(
+    null
+  )
+  const [generatedCourse, setGeneratedCourse] =
+    useState<GeneratedCourse | null>(null)
+
   // Auto-transition when returning from catalog with a selected course
   useEffect(() => {
     if (catalogCourse) {
@@ -61,7 +81,7 @@ export function CreatePage({
     if (!topic.trim()) return
     setMethod("quick")
     setCatalogCreator(undefined)
-    setStep("personalizing")
+    setStep("course-form")
   }
 
   const handleTrendingClick = (course: CatalogCourse) => {
@@ -92,7 +112,122 @@ export function CreatePage({
     setStep("personalizing")
   }
 
+  /* ─── Quick-flow handlers ─── */
+
+  const handleFormGenerate = async (params: CourseGenerationParams) => {
+    setGenerationParams(params)
+    const { courseId } = await generateCourse(params)
+    setGeneratingCourseId(courseId)
+    setStep("generating")
+  }
+
+  const handleGenerationComplete = (course: GeneratedCourse) => {
+    setGeneratedCourse(course)
+    setStep("preview")
+  }
+
+  const handleGenerationError = () => {
+    // Go back to form so user can retry
+    setStep("course-form")
+  }
+
+  const handleStartLearning = () => {
+    if (!generatedCourse) return
+    const totalLessons = generatedCourse.structure.levels.reduce(
+      (sum, l) => sum + l.lessons.length,
+      0
+    )
+
+    // Build a LearningPath from the generated structure so the outline modal
+    // shows real level/lesson titles instead of generic placeholders.
+    const learningPath: LearningPath = {
+      courseId: generatedCourse.courseId,
+      courseName: generatedCourse.title,
+      sections: generatedCourse.structure.levels.map((level) => ({
+        id: `lvl-${level.levelNumber}`,
+        title: level.title,
+        doneLessons: 0,
+        totalLessons: level.lessons.length,
+        lessons: [
+          ...level.lessons.map((lesson) => ({
+            id: lesson.lessonId,
+            title: lesson.title,
+            status: "locked" as const,
+          })),
+          {
+            id: `lvl-${level.levelNumber}-review`,
+            title: "Level Review",
+            status: "locked" as const,
+            isReview: true,
+            reviewProgress: `0/${level.lessons.length} sessions`,
+          },
+        ],
+      })),
+    }
+    // Mark the very first lesson as active (next up)
+    if (learningPath.sections.length > 0 && learningPath.sections[0].lessons.length > 0) {
+      learningPath.sections[0].lessons[0].status = "pending"
+    }
+    registerLearningPath(learningPath)
+    registerCourseContent(generatedCourse)
+
+    const course: Course = {
+      id: generatedCourse.courseId,
+      name: generatedCourse.title,
+      creator: "You",
+      status: "Not Started",
+      doneLessons: 0,
+      totalLessons,
+      createdAt: new Date().toISOString().slice(0, 10),
+      isShared: false,
+      shareCount: 0,
+      isPublished: false,
+      createdByUser: true,
+    }
+    onComplete(course)
+  }
+
+  const handleRegenerate = async () => {
+    if (!generationParams) return
+    const { courseId } = await generateCourse(generationParams)
+    setGeneratingCourseId(courseId)
+    setStep("generating")
+  }
+
   // Sub-views
+  if (step === "course-form") {
+    return (
+      <CourseForm
+        topic={topic}
+        initialParams={generationParams}
+        onBack={() => setStep("landing")}
+        onGenerate={handleFormGenerate}
+      />
+    )
+  }
+
+  if (step === "generating" && generatingCourseId) {
+    return (
+      <GenerationProgress
+        courseId={generatingCourseId}
+        onComplete={handleGenerationComplete}
+        onError={handleGenerationError}
+      />
+    )
+  }
+
+  if (step === "preview" && generatedCourse) {
+    return (
+      <CoursePreview
+        course={generatedCourse}
+        onStartLearning={handleStartLearning}
+        onRegenerate={handleRegenerate}
+        onEditParams={() => setStep("course-form")}
+        onBack={() => setStep("landing")}
+      />
+    )
+  }
+
   if (step === "chat-explore") {
     return (
       <ChatExploreView

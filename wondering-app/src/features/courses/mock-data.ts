@@ -254,6 +254,11 @@ export const mockLearningPaths: Record<string, LearningPath> = {
   },
 }
 
+/** Register a learning path at runtime (e.g. after course generation). */
+export function registerLearningPath(path: LearningPath) {
+  mockLearningPaths[path.courseId] = path
+}
+
 /** Fallback: generate a generic learning path from any Course */
 export function generateLearningPath(course: Course): LearningPath {
   const lessonsPerSection = 3
